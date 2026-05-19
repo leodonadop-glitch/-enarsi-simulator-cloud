@@ -283,7 +283,7 @@ function App() {
 
   useEffect(() => {
     const handler = (e) => {
-      if (e.target.tagName === 'INPUT') return;
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
       if (e.key === 'ArrowRight' || e.key === 'n') handleNext();
       if (e.key === 'ArrowLeft' || e.key === 'p') handlePrev();
       if (e.key === 'r' && !showAnswer) handleShowAnswer();
