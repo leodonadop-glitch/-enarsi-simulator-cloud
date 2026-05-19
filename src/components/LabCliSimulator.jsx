@@ -1,27 +1,12 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
-
-// Basic Cisco dictionary to supplement expected commands
-const COMMON_CMDS = ['enable', 'configure terminal', 'end', 'exit', 'write memory', 'wr', 'show running-config'];
+import { IOSSimulator } from '../lib/ios-simulator';
 
 const DeviceCli = ({ name, expected, showAnswer }) => {
-  const [cliInput, setCliInput] = useState(`${name}# `);
+  // Instantiate the simulator once per device
+  const simulator = useMemo(() => new IOSSimulator(name), [name]);
+  
+  const [cliInput, setCliInput] = useState(`${simulator.getPrompt()}`);
   const textareaRef = useRef(null);
-
-  // Build dictionary from expected commands + common commands
-  const dictionary = useMemo(() => {
-    const dict = new Set(COMMON_CMDS);
-    expected.forEach(cmd => {
-      // Add the full command and partial prefixes
-      const parts = cmd.split(' ');
-      let current = '';
-      parts.forEach(p => {
-        current += (current ? ' ' : '') + p;
-        dict.add(current);
-      });
-      dict.add(cmd.trim());
-    });
-    return Array.from(dict);
-  }, [expected]);
 
   const handleKeyDown = (e) => {
     if (showAnswer) return;
@@ -30,62 +15,56 @@ const DeviceCli = ({ name, expected, showAnswer }) => {
       e.preventDefault();
       const lines = cliInput.split('\n');
       const currentLine = lines[lines.length - 1];
-      const promptMatch = currentLine.match(/^(.*?#\s*)(.*)$/);
+      const promptMatch = currentLine.match(/^(.*?#\s*|>.*?)(.*)$/);
       if (!promptMatch) return;
       
       const prompt = promptMatch[1];
       const typed = promptMatch[2];
       
-      // Find matches in dictionary
-      const matches = dictionary.filter(cmd => cmd.startsWith(typed));
-      if (matches.length === 1) {
-        // Autocomplete
-        lines[lines.length - 1] = prompt + matches[0];
-        setCliInput(lines.join('\n'));
-      } else if (matches.length > 1) {
-        // Find common prefix
-        let common = matches[0];
-        for (let i = 1; i < matches.length; i++) {
-          let j = 0;
-          while (j < common.length && j < matches[i].length && common[j] === matches[i][j]) {
-            j++;
-          }
-          common = common.slice(0, j);
-        }
-        if (common.length > typed.length) {
-          lines[lines.length - 1] = prompt + common;
-          setCliInput(lines.join('\n'));
-        }
-      }
+      const completed = simulator.autocomplete(typed);
+      lines[lines.length - 1] = prompt + completed;
+      setCliInput(lines.join('\n'));
+      
     } else if (e.key === '?') {
       e.preventDefault();
       const lines = cliInput.split('\n');
       const currentLine = lines[lines.length - 1];
-      const promptMatch = currentLine.match(/^(.*?#\s*)(.*)$/);
-      const prompt = promptMatch ? promptMatch[1] : `${name}# `;
+      const promptMatch = currentLine.match(/^(.*?#\s*|>.*?)(.*)$/);
+      const prompt = promptMatch ? promptMatch[1] : simulator.getPrompt();
       const typed = promptMatch ? promptMatch[2] : '';
       
-      // Find matches
-      const matches = dictionary.filter(cmd => cmd.startsWith(typed));
-      let nextWords = new Set();
-      matches.forEach(m => {
-        const remaining = m.slice(typed.length).trim();
-        if (remaining) {
-          nextWords.add(remaining.split(' ')[0]);
-        }
-      });
-      
-      const helpText = Array.from(nextWords).sort().join('  ');
-      
-      if (helpText) {
-        setCliInput(cliInput + '?\n' + helpText + '\n' + prompt + typed);
-      } else {
-        setCliInput(cliInput + '?\n% Unrecognized command\n' + prompt + typed);
-      }
+      // We pass the typed string if we want contextual help in the future, 
+      // but the simulator currently handles '?' as a full command.
+      // Let's just execute '?'
+      const output = simulator.execute('?');
+      setCliInput(cliInput + '?\n' + output + '\n' + simulator.getPrompt() + typed);
+
     } else if (e.key === 'Enter') {
       e.preventDefault();
-      // append new prompt
-      setCliInput(cliInput + '\n' + `${name}# `);
+      const lines = cliInput.split('\n');
+      const currentLine = lines[lines.length - 1];
+      
+      // Extract what the user typed after the prompt
+      const promptMatch = currentLine.match(/^(.*?#\s*|>.*?)(.*)$/);
+      let typed = '';
+      if (promptMatch) {
+        typed = promptMatch[2];
+      } else {
+        // Fallback
+        typed = currentLine;
+      }
+
+      // Execute command in the simulator
+      const output = simulator.execute(typed);
+      
+      // Append output and new prompt
+      let nextContent = cliInput + '\n';
+      if (output) {
+        nextContent += output + '\n';
+      }
+      nextContent += simulator.getPrompt();
+      
+      setCliInput(nextContent);
     }
   };
 
@@ -99,14 +78,8 @@ const DeviceCli = ({ name, expected, showAnswer }) => {
   const validateCommands = () => {
     if (!expected || expected.length === 0) return null;
     
-    // Normalize input (ignore prompts, empty lines, comments)
-    const lines = cliInput.split('\n').map(l => {
-      // remove prompt
-      const promptIdx = l.indexOf('#');
-      let cleaned = promptIdx >= 0 ? l.slice(promptIdx + 1) : l;
-      return cleaned.trim().toLowerCase();
-    }).filter(l => l.length > 0 && !l.startsWith('!') && !l.startsWith('?'));
-    
+    // We check the history of executed commands in the simulator!
+    const lines = simulator.state.history.map(l => l.toLowerCase());
     const expectedNormalized = expected.map(c => c.trim().toLowerCase()).filter(c => !c.startsWith('!'));
     
     const missing = [];
