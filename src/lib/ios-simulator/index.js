@@ -100,17 +100,24 @@ export class IOSSimulator {
     return `Building configuration...\n!\nversion 15.2\nhostname ${this.state.hostname}\n!\nend`;
   }
 
+  ciscoMatch(expected, typed) {
+    const expWords = expected.trim().toLowerCase().split(/\s+/);
+    const typedWords = typed.trim().toLowerCase().split(/\s+/);
+    if (expWords.length !== typedWords.length) return false;
+    for (let i = 0; i < expWords.length; i++) {
+      if (!expWords[i].startsWith(typedWords[i])) return false;
+    }
+    return true;
+  }
+
   execute(input) {
     const trimmed = input.trim();
     if (!trimmed) return '';
     if (trimmed.startsWith('!')) return ''; // Comment
 
-    this.state.history.push(trimmed);
-
     // Help
     if (trimmed === '?') {
       const allOpts = this.getAllDictionaryOptions();
-      // Only show the first word of each option for root help
       const rootCmds = Array.from(new Set(allOpts.map(cmd => cmd.split(' ')[0]))).sort();
       return rootCmds.join('\n');
     }
@@ -122,44 +129,72 @@ export class IOSSimulator {
       let nextWords = new Set();
       matches.forEach(m => {
         const remaining = m.slice(search.length).trim();
-        if (remaining) {
-          nextWords.add(remaining.split(' ')[0]);
-        }
+        if (remaining) nextWords.add(remaining.split(' ')[0]);
       });
       return Array.from(nextWords).sort().join('\n') || '% Unrecognized command';
     }
 
     const available = this.getAvailableCommands();
+    let finalCommandToHistory = trimmed;
+    let handled = false;
+    let output = '';
     
-    // Exact alias match first (like "conf t" or "wr")
+    // Exact alias match first
     let exactAlias = available.find(c => c.aliases && c.aliases.includes(trimmed));
     if (exactAlias) {
-      return exactAlias.handler([]) || '';
-    }
-
-    // Command prefix matching
-    const parts = trimmed.split(' ');
-    const cmdName = parts[0].toLowerCase();
-    
-    const matches = available.filter(c => c.name.startsWith(cmdName));
-
-    if (matches.length === 0) {
-      // If it's an expected command but not formally implemented, we just accept it silently to allow lab progress
-      if (this.expectedCommands.some(c => c.startsWith(trimmed))) {
-        return '';
-      }
-      return '% Unrecognized command';
-    } else if (matches.length > 1) {
-      // Is one of them an exact match?
-      const exact = matches.find(c => c.name === cmdName || c.name === trimmed);
-      if (exact) {
-        return exact.handler(parts.slice(1)) || '';
-      }
-      return `% Ambiguous command: "${cmdName}"`;
+      finalCommandToHistory = exactAlias.name;
+      output = exactAlias.handler([]) || '';
+      handled = true;
     } else {
-      // Execute the single match
-      return matches[0].handler(parts.slice(1)) || '';
+      // Command prefix matching
+      const parts = trimmed.split(' ');
+      const cmdName = parts[0].toLowerCase();
+      const matches = available.filter(c => c.name.startsWith(cmdName));
+
+      if (matches.length === 1) {
+        finalCommandToHistory = matches[0].name + (parts.length > 1 ? ' ' + parts.slice(1).join(' ') : '');
+        output = matches[0].handler(parts.slice(1)) || '';
+        handled = true;
+      } else if (matches.length > 1) {
+        const exact = matches.find(c => c.name === cmdName || c.name === trimmed);
+        if (exact) {
+          finalCommandToHistory = exact.name + (parts.length > 1 ? ' ' + parts.slice(1).join(' ') : '');
+          output = exact.handler(parts.slice(1)) || '';
+          handled = true;
+        } else {
+          return `% Ambiguous command: "${cmdName}"`;
+        }
+      }
     }
+
+    if (!handled) {
+      // Not in built-in registry. Check expected commands using Cisco prefix matching
+      const expectedMatches = this.expectedCommands.filter(c => this.ciscoMatch(c, trimmed) || c.startsWith(trimmed));
+      if (expectedMatches.length === 1) {
+        finalCommandToHistory = expectedMatches[0]; // Normalize to full expected command
+        output = ''; // Silently accept for lab progress
+      } else if (expectedMatches.length > 1) {
+        const exact = expectedMatches.find(c => c === trimmed);
+        if (exact) {
+          finalCommandToHistory = exact;
+          output = '';
+        } else {
+          return `% Ambiguous command: "${trimmed}"`;
+        }
+      } else {
+        return '% Unrecognized command';
+      }
+    } else {
+      // If handled by built-in, try to expand to full expected command if possible
+      // Example: "interface tunn 0" -> "interface tunnel 0"
+      const expMatch = this.expectedCommands.find(c => this.ciscoMatch(c, finalCommandToHistory));
+      if (expMatch) {
+        finalCommandToHistory = expMatch;
+      }
+    }
+
+    this.state.history.push(finalCommandToHistory);
+    return output;
   }
 
   autocomplete(input) {
