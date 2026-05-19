@@ -79,7 +79,10 @@ const DeviceCli = ({ name, expected, showAnswer }) => {
     if (!expected || expected.length === 0) return null;
     
     // We check the history of executed commands in the simulator!
-    const lines = simulator.state.history.map(l => l.toLowerCase());
+    const lines = simulator.state.history.map(l => {
+      if (typeof l === 'string') return l.toLowerCase();
+      return (l.normalized || l.typed).toLowerCase();
+    });
     const expectedNormalized = expected.map(c => c.trim().toLowerCase()).filter(c => !c.startsWith('!'));
     
     const missing = [];

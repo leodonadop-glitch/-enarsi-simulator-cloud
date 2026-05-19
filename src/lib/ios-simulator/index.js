@@ -105,7 +105,11 @@ export class IOSSimulator {
     const typedWords = typed.trim().toLowerCase().split(/\s+/);
     if (expWords.length !== typedWords.length) return false;
     for (let i = 0; i < expWords.length; i++) {
-      if (!expWords[i].startsWith(typedWords[i])) return false;
+      if (/\d/.test(expWords[i])) {
+        if (expWords[i] !== typedWords[i]) return false;
+      } else {
+        if (!expWords[i].startsWith(typedWords[i])) return false;
+      }
     }
     return true;
   }
@@ -193,7 +197,7 @@ export class IOSSimulator {
       }
     }
 
-    this.state.history.push(finalCommandToHistory);
+    this.state.history.push({ typed: trimmed, normalized: finalCommandToHistory });
     return output;
   }
 
