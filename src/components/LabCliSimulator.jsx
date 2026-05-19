@@ -3,7 +3,7 @@ import { IOSSimulator } from '../lib/ios-simulator';
 
 const DeviceCli = ({ name, expected, showAnswer }) => {
   // Instantiate the simulator once per device
-  const simulator = useMemo(() => new IOSSimulator(name), [name]);
+  const simulator = useMemo(() => new IOSSimulator(name, expected), [name, expected]);
   
   const [cliInput, setCliInput] = useState(`${simulator.getPrompt()}`);
   const textareaRef = useRef(null);

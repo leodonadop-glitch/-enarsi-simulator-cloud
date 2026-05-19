@@ -20,7 +20,7 @@ const MODE_PROMPTS = {
 
 // Basic IOS Simulator Engine
 export class IOSSimulator {
-  constructor(initialHostname = 'Router') {
+  constructor(initialHostname = 'Router', expectedCommands = []) {
     this.state = {
       hostname: initialHostname,
       mode: MODES.USER_EXEC,
@@ -28,6 +28,8 @@ export class IOSSimulator {
       runningConfig: [],
       history: []
     };
+    
+    this.expectedCommands = expectedCommands;
 
     // Very basic command registry for now. 
     // In the future, this should be split into modular files.
@@ -49,18 +51,20 @@ export class IOSSimulator {
       { mode: MODES.GLOBAL_CONFIG, name: 'interface', handler: (args) => { this.state.mode = MODES.INTERFACE_CONFIG; return ''; } },
       { mode: MODES.GLOBAL_CONFIG, name: 'router', handler: (args) => { this.state.mode = MODES.ROUTER_CONFIG; return ''; } },
       { mode: MODES.GLOBAL_CONFIG, name: 'vlan', handler: (args) => { this.state.mode = MODES.VLAN_CONFIG; return ''; } },
+      { mode: MODES.GLOBAL_CONFIG, name: 'ip', handler: () => { return ''; } }, // Added to catch ip commands
       { mode: MODES.GLOBAL_CONFIG, name: 'exit', handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } },
       { mode: MODES.GLOBAL_CONFIG, name: 'end', handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } },
 
       // INTERFACE CONFIG
-      { mode: MODES.INTERFACE_CONFIG, name: 'ip address', handler: () => { return ''; } },
-      { mode: MODES.INTERFACE_CONFIG, name: 'no shutdown', handler: () => { return '%LINK-3-UPDOWN: Interface, changed state to up'; } },
+      { mode: MODES.INTERFACE_CONFIG, name: 'ip', handler: () => { return ''; } }, // ip address, ip nhrp
+      { mode: MODES.INTERFACE_CONFIG, name: 'no', handler: () => { return ''; } }, // no shutdown
       { mode: MODES.INTERFACE_CONFIG, name: 'shutdown', handler: () => { return '%LINK-3-UPDOWN: Interface, changed state to down'; } },
       { mode: MODES.INTERFACE_CONFIG, name: 'exit', handler: () => { this.state.mode = MODES.GLOBAL_CONFIG; return ''; } },
       { mode: MODES.INTERFACE_CONFIG, name: 'end', handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } },
 
       // ROUTER CONFIG
       { mode: MODES.ROUTER_CONFIG, name: 'network', handler: () => { return ''; } },
+      { mode: MODES.ROUTER_CONFIG, name: 'no', handler: () => { return ''; } },
       { mode: MODES.ROUTER_CONFIG, name: 'exit', handler: () => { this.state.mode = MODES.GLOBAL_CONFIG; return ''; } },
       { mode: MODES.ROUTER_CONFIG, name: 'end', handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } },
 
@@ -80,6 +84,18 @@ export class IOSSimulator {
     return this.commands.filter(c => c.mode === this.state.mode);
   }
 
+  getAllDictionaryOptions() {
+    const availableCmds = this.getAvailableCommands();
+    let allOptions = new Set(this.expectedCommands.map(c => c.trim()));
+    
+    availableCmds.forEach(c => {
+      allOptions.add(c.name);
+      if (c.aliases) c.aliases.forEach(a => allOptions.add(a));
+    });
+    
+    return Array.from(allOptions);
+  }
+
   generateRunningConfig() {
     return `Building configuration...\n!\nversion 15.2\nhostname ${this.state.hostname}\n!\nend`;
   }
@@ -93,8 +109,24 @@ export class IOSSimulator {
 
     // Help
     if (trimmed === '?') {
-      const cmds = this.getAvailableCommands().map(c => c.name).sort();
-      return cmds.join('\n');
+      const allOpts = this.getAllDictionaryOptions();
+      // Only show the first word of each option for root help
+      const rootCmds = Array.from(new Set(allOpts.map(cmd => cmd.split(' ')[0]))).sort();
+      return rootCmds.join('\n');
+    }
+    
+    if (trimmed.endsWith('?')) {
+      const search = trimmed.slice(0, -1);
+      const allOpts = this.getAllDictionaryOptions();
+      const matches = allOpts.filter(cmd => cmd.startsWith(search));
+      let nextWords = new Set();
+      matches.forEach(m => {
+        const remaining = m.slice(search.length).trim();
+        if (remaining) {
+          nextWords.add(remaining.split(' ')[0]);
+        }
+      });
+      return Array.from(nextWords).sort().join('\n') || '% Unrecognized command';
     }
 
     const available = this.getAvailableCommands();
@@ -112,6 +144,10 @@ export class IOSSimulator {
     const matches = available.filter(c => c.name.startsWith(cmdName));
 
     if (matches.length === 0) {
+      // If it's an expected command but not formally implemented, we just accept it silently to allow lab progress
+      if (this.expectedCommands.some(c => c.startsWith(trimmed))) {
+        return '';
+      }
       return '% Unrecognized command';
     } else if (matches.length > 1) {
       // Is one of them an exact match?
@@ -127,29 +163,28 @@ export class IOSSimulator {
   }
 
   autocomplete(input) {
-    const parts = input.split(' ');
-    const cmdName = parts[0].toLowerCase();
-    
-    // Basic autocomplete for the first word
-    const available = this.getAvailableCommands();
-    const matches = available.filter(c => c.name.startsWith(cmdName));
-    
+    const trimmed = input.trimStart();
+    if (!trimmed) return input;
+
+    const allOptions = this.getAllDictionaryOptions();
+    const matches = allOptions.filter(cmd => cmd.startsWith(trimmed));
+
     if (matches.length === 1) {
-      return matches[0].name + (parts.length > 1 ? ' ' + parts.slice(1).join(' ') : '');
+      return matches[0] + ' ';
     }
-    
-    // Find common prefix if multiple matches
+
     if (matches.length > 1) {
-      let common = matches[0].name;
+      let common = matches[0];
       for (let i = 1; i < matches.length; i++) {
         let j = 0;
-        while (j < common.length && j < matches[i].name.length && common[j] === matches[i].name[j]) {
+        while (j < common.length && j < matches[i].length && common[j] === matches[i][j]) {
           j++;
         }
         common = common.slice(0, j);
       }
       return common;
     }
+
     return input;
   }
 }
