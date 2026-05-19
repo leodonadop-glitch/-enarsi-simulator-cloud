@@ -1,0 +1,926 @@
+{
+  "resolved": {
+    "104": "B",
+    "259": "B",
+    "395": "C"
+  },
+  "uncertain": {
+    "66": {
+      "candidates": [
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "73": {
+      "candidates": [
+        "B",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "74": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "78": {
+      "candidates": [
+        "A",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "79": {
+      "candidates": [
+        "B",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "80": {
+      "candidates": [
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "81": {
+      "candidates": [
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "82": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "90": {
+      "candidates": [
+        "A"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "91": {
+      "candidates": [
+        "B"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "97": {
+      "candidates": [
+        "A",
+        "B",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "103": {
+      "candidates": [
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "108": {
+      "candidates": [
+        "A",
+        "B"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "109": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "113": {
+      "candidates": [
+        "A",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "115": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "119": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "148": {
+      "candidates": [
+        "B",
+        "C"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "155": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "157": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "167": {
+      "candidates": [
+        "B"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "170": {
+      "candidates": [
+        "B",
+        "C"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "177": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "182": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "188": {
+      "candidates": [
+        "B"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "195": {
+      "candidates": [
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "199": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "201": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "202": {
+      "candidates": [
+        "B",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "217": {
+      "candidates": [
+        "A",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "239": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "241": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "243": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "244": {
+      "candidates": [
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "245": {
+      "candidates": [
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "250": {
+      "candidates": [
+        "B",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "252": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "255": {
+      "candidates": [
+        "B",
+        "C"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "257": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "258": {
+      "candidates": [
+        "A"
+      ],
+      "confidence": "low",
+      "source": "solo-letter-line"
+    },
+    "266": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "271": {
+      "candidates": [
+        "E"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "272": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "280": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "288": {
+      "candidates": [
+        "A",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "299": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "300": {
+      "candidates": [
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "305": {
+      "candidates": [
+        "A"
+      ],
+      "confidence": "low",
+      "source": "solo-letter-line"
+    },
+    "309": {
+      "candidates": [
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "311": {
+      "candidates": [
+        "A",
+        "B"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "313": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "316": {
+      "candidates": [
+        "B"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "323": {
+      "candidates": [
+        "A",
+        "B",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "329": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "330": {
+      "candidates": [
+        "A",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "334": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "336": {
+      "candidates": [
+        "B",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "337": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "338": {
+      "candidates": [
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "339": {
+      "candidates": [
+        "B",
+        "C"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "344": {
+      "candidates": [
+        "B"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "346": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "347": {
+      "candidates": [
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "350": {
+      "candidates": [
+        "A",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "353": {
+      "candidates": [
+        "C"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "358": {
+      "candidates": [
+        "B",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "362": {
+      "candidates": [
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "363": {
+      "candidates": [
+        "C"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "367": {
+      "candidates": [
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "368": {
+      "candidates": [
+        "B",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "369": {
+      "candidates": [
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "370": {
+      "candidates": [
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "371": {
+      "candidates": [
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "375": {
+      "candidates": [
+        "A",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "376": {
+      "candidates": [
+        "B",
+        "C"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "384": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "385": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "388": {
+      "candidates": [
+        "B",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "389": {
+      "candidates": [
+        "A",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "390": {
+      "candidates": [
+        "B",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "392": {
+      "candidates": [
+        "B",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "401": {
+      "candidates": [
+        "A",
+        "B",
+        "C"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "403": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "413": {
+      "candidates": [
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "415": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "417": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "420": {
+      "candidates": [
+        "B",
+        "C"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "422": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "429": {
+      "candidates": [
+        "D"
+      ],
+      "confidence": "low",
+      "source": "solo-letter-line"
+    },
+    "431": {
+      "candidates": [
+        "E"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "432": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "433": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "435": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "437": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "438": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "439": {
+      "candidates": [
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "440": {
+      "candidates": [
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "445": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "447": {
+      "candidates": [
+        "A",
+        "C"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "448": {
+      "candidates": [
+        "B",
+        "C",
+        "D"
+      ],
+      "confidence": "medium",
+      "source": "line-start-letter-dot"
+    },
+    "449": {
+      "candidates": [
+        "A"
+      ],
+      "confidence": "low",
+      "source": "solo-letter-line"
+    },
+    "454": {
+      "candidates": [
+        "C"
+      ],
+      "confidence": "low",
+      "source": "solo-letter-line"
+    },
+    "462": {
+      "candidates": [
+        "A"
+      ],
+      "confidence": "low",
+      "source": "solo-letter-line"
+    }
+  },
+  "failed": [
+    63,
+    65,
+    76,
+    85,
+    95,
+    106,
+    118,
+    126,
+    140,
+    146,
+    165,
+    191,
+    194,
+    209,
+    220,
+    224,
+    231,
+    235,
+    236,
+    256,
+    261,
+    263,
+    265,
+    274,
+    281,
+    287,
+    314,
+    318,
+    319,
+    328,
+    331,
+    335,
+    340,
+    349,
+    351,
+    355,
+    356,
+    357,
+    373,
+    374,
+    378,
+    379,
+    386,
+    398,
+    407,
+    408,
+    409,
+    425,
+    426,
+    430,
+    441,
+    442,
+    443,
+    444,
+    446,
+    450,
+    451,
+    452,
+    453,
+    455,
+    456,
+    457,
+    458,
+    459,
+    460,
+    461,
+    463
+  ]
+}

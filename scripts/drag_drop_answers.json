@@ -1,0 +1,362 @@
+{
+  "449": {
+    "type": "drag_and_drop",
+    "instruction": "Drag and drop the descriptions from the left onto the IPv6 first hop security features on the right.",
+    "draggableItems": [
+      "validates the contents of RA and redirect messages",
+      "prerequisite to other IPv6 first hop security features",
+      "filters IPv6 traffic on layer 2 ports that are not trusted",
+      "blocks DHCP replies or advertisements not originating from a DHCP server or relay",
+      "enables the filtering of IPv6 traffic based on the destination address",
+      "populates the binding table with binding information extracted from the data packets"
+    ],
+    "dropTargets": [
+      "IPv6 RA guard",
+      "IPv6 snooping",
+      "IPv6 Source Guard",
+      "DHCP guard"
+    ],
+    "correctMapping": {
+      "IPv6 RA guard": ["validates the contents of RA and redirect messages"],
+      "IPv6 snooping": ["prerequisite to other IPv6 first hop security features"],
+      "IPv6 Source Guard": ["filters IPv6 traffic on layer 2 ports that are not trusted"],
+      "DHCP guard": ["blocks DHCP replies or advertisements not originating from a DHCP server or relay"]
+    }
+  },
+  "450": {
+    "type": "drag_and_drop",
+    "instruction": "Drag and drop the ICMPv6 neighbor discovery messages from the left onto the correct packet types on the right.",
+    "draggableItems": [
+      "Router Advertisement",
+      "Redirect Message",
+      "Neighbor Solicitation",
+      "Router Solicitation",
+      "Neighbor Advertisement"
+    ],
+    "dropTargets": [
+      "ICMPv6 Type 134",
+      "ICMPv6 Type 137",
+      "ICMPv6 Type 135",
+      "ICMPv6 Type 133",
+      "ICMPv6 Type 136"
+    ],
+    "correctMapping": {
+      "ICMPv6 Type 134": ["Router Advertisement"],
+      "ICMPv6 Type 137": ["Redirect Message"],
+      "ICMPv6 Type 135": ["Neighbor Solicitation"],
+      "ICMPv6 Type 133": ["Router Solicitation"],
+      "ICMPv6 Type 136": ["Neighbor Advertisement"]
+    }
+  },
+  "451": {
+    "type": "drag_and_drop",
+    "instruction": "Drag and drop the MPLS concepts from the left onto the descriptions on the right.",
+    "draggableItems": [
+      "label edge router",
+      "label switch router",
+      "forwarding equivalence class",
+      "penultimate hop popping"
+    ],
+    "dropTargets": [
+      "allows an LSR to remove the label before forwarding the packet",
+      "accepts unlabeled packets and imposes labels",
+      "group of packets that are forwarded in the same manner",
+      "receives labeled packets and swaps labels"
+    ],
+    "correctMapping": {
+      "allows an LSR to remove the label before forwarding the packet": ["penultimate hop popping"],
+      "accepts unlabeled packets and imposes labels": ["label edge router"],
+      "group of packets that are forwarded in the same manner": ["forwarding equivalence class"],
+      "receives labeled packets and swaps labels": ["label switch router"]
+    }
+  },
+  "452": {
+    "type": "drag_and_drop",
+    "instruction": "Drag and drop the MPLS VPN concepts from the left onto the correct descriptions on the right.",
+    "draggableItems": [
+      "route distinguisher",
+      "route target",
+      "Resource Reservation Protocol",
+      "multiprotocol BGP"
+    ],
+    "dropTargets": [
+      "propagates VPN reachability information",
+      "distributes labels for traffic engineer",
+      "uniquely identifies a customer prefix",
+      "controls the import/export of customer prefixes"
+    ],
+    "correctMapping": {
+      "propagates VPN reachability information": ["multiprotocol BGP"],
+      "distributes labels for traffic engineer": ["Resource Reservation Protocol"],
+      "uniquely identifies a customer prefix": ["route distinguisher"],
+      "controls the import/export of customer prefixes": ["route target"]
+    }
+  },
+  "453": {
+    "type": "drag_and_drop",
+    "instruction": "Drag and drop the MPLS VPN device types from the left onto the definitions on the right.",
+    "draggableItems": [
+      "Customer (C) device",
+      "CE device",
+      "PE device",
+      "Provider (P) device"
+    ],
+    "dropTargets": [
+      "device in the core of the provider network that switches MPLS packets",
+      "device that attaches and detaches the VPN labels to the packets in the provider network",
+      "device in the enterprise network that connects to other customer devices",
+      "device at the edge of the enterprise network that connects to the SP network"
+    ],
+    "correctMapping": {
+      "device in the core of the provider network that switches MPLS packets": ["Provider (P) device"],
+      "device that attaches and detaches the VPN labels to the packets in the provider network": ["PE device"],
+      "device in the enterprise network that connects to other customer devices": ["Customer (C) device"],
+      "device at the edge of the enterprise network that connects to the SP network": ["CE device"]
+    }
+  },
+  "454": {
+    "type": "drag_and_drop",
+    "instruction": "Drag and drop the MPLS terms from the left onto the correct definitions on the right.",
+    "draggableItems": [
+      "PE",
+      "P",
+      "CE",
+      "LSP"
+    ],
+    "dropTargets": [
+      "devices that forwards traffic based on labels",
+      "path that the labeled packet takes",
+      "devices that is unaware of MPLS labeling",
+      "device that removes and adds the MPLS labeling"
+    ],
+    "correctMapping": {
+      "devices that forwards traffic based on labels": ["P"],
+      "path that the labeled packet takes": ["LSP"],
+      "devices that is unaware of MPLS labeling": ["CE"],
+      "device that removes and adds the MPLS labeling": ["PE"]
+    }
+  },
+  "455": {
+    "type": "drag_and_drop",
+    "instruction": "Drag and drop the actions from the left into the correct order on the right to configure a policy to avoid following packet forwarding based on the normal routing path.",
+    "draggableItems": [
+      "Configure route map instances.",
+      "Configure set commands.",
+      "Configure fast switching for PBR.",
+      "Configure ACLs",
+      "Configure match commands.",
+      "Configure PBR on the interface."
+    ],
+    "dropTargets": [
+      "Step 1",
+      "Step 2",
+      "Step 3",
+      "Step 4",
+      "Step 5",
+      "Step 6"
+    ],
+    "correctMapping": {
+      "Step 1": ["Configure ACLs"],
+      "Step 2": ["Configure route map instances."],
+      "Step 3": ["Configure match commands."],
+      "Step 4": ["Configure set commands."],
+      "Step 5": ["Configure PBR on the interface."],
+      "Step 6": ["Configure fast switching for PBR."]
+    }
+  },
+  "456": {
+    "type": "drag_and_drop",
+    "instruction": "Drag and drop the IPv6 first hop security device roles from the left onto the corresponding descriptions on the right.",
+    "draggableItems": [
+      "host",
+      "router",
+      "monitor",
+      "switch"
+    ],
+    "dropTargets": [
+      "Receives router advertisements from valid routers, and no router solicitation are received.",
+      "Receives router solicitation and sends router advertisements",
+      "Receives valid and rogue router advertisements and all router solicitation.",
+      "Received router advertisements are trusted and are flooded to synchronize states."
+    ],
+    "correctMapping": {
+      "Receives router advertisements from valid routers, and no router solicitation are received.": ["host"],
+      "Receives router solicitation and sends router advertisements": ["router"],
+      "Receives valid and rogue router advertisements and all router solicitation.": ["monitor"],
+      "Received router advertisements are trusted and are flooded to synchronize states.": ["switch"]
+    }
+  },
+  "457": {
+    "type": "drag_and_drop_code",
+    "instruction": "Drag and drop the code snippets from the right onto the boxes in the configuration to establish the needed connection.",
+    "draggableItems": [
+      "customer_a",
+      "customer_b",
+      "192.168.1.1 255.255.255.0",
+      "192.168.1.2 255.255.255.0"
+    ],
+    "dropTargets": [
+      "CE1 interface Gig0/0 ip vrf forwarding",
+      "CE1 interface Gig0/0 ip address",
+      "CE1 interface Gig0/1 ip vrf forwarding",
+      "CE1 interface Gig0/1 ip address",
+      "CE2 interface Gig0/0 ip vrf forwarding",
+      "CE2 interface Gig0/0 ip address",
+      "CE2 interface Gig0/1 ip vrf forwarding",
+      "CE2 interface Gig0/1 ip address"
+    ],
+    "correctMapping": {
+      "CE1 interface Gig0/0 ip vrf forwarding": ["customer_a"],
+      "CE1 interface Gig0/0 ip address": ["192.168.1.1 255.255.255.0"],
+      "CE1 interface Gig0/1 ip vrf forwarding": ["customer_b"],
+      "CE1 interface Gig0/1 ip address": ["192.168.1.1 255.255.255.0"],
+      "CE2 interface Gig0/0 ip vrf forwarding": ["customer_a"],
+      "CE2 interface Gig0/0 ip address": ["192.168.1.2 255.255.255.0"],
+      "CE2 interface Gig0/1 ip vrf forwarding": ["customer_b"],
+      "CE2 interface Gig0/1 ip address": ["192.168.1.2 255.255.255.0"]
+    }
+  },
+  "458": {
+    "type": "drag_and_drop",
+    "instruction": "Drag and drop the IPv6 First-Hop Security features from the left onto the definitions on the right.",
+    "draggableItems": [
+      "IPv6 DHCPv6 Guard",
+      "IPv6 Binding Table",
+      "IPv6 Source Guard",
+      "IPv6 RA Guard",
+      "IPv6 ND Inspection"
+    ],
+    "dropTargets": [
+      "Block a malicious host and permit the router from a legitimate route.",
+      "Block reply and advertisement messages from unauthorized DHCP servers and relay agents.",
+      "create a binding table that is based on NS and NA messages.",
+      "Filter inbound traffic on Layer 2 switch ports that are not in the IPv6 binding table.",
+      "create IPv6 neighbors connected to the device from information sources such as NDP snooping."
+    ],
+    "correctMapping": {
+      "Block a malicious host and permit the router from a legitimate route.": ["IPv6 RA Guard"],
+      "Block reply and advertisement messages from unauthorized DHCP servers and relay agents.": ["IPv6 DHCPv6 Guard"],
+      "create a binding table that is based on NS and NA messages.": ["IPv6 ND Inspection"],
+      "Filter inbound traffic on Layer 2 switch ports that are not in the IPv6 binding table.": ["IPv6 Source Guard"],
+      "create IPv6 neighbors connected to the device from information sources such as NDP snooping.": ["IPv6 Binding Table"]
+    }
+  },
+  "459": {
+    "type": "drag_and_drop",
+    "instruction": "Drag and drop the LDP features from the left onto the decisions on the right.",
+    "draggableItems": [
+      "implicit null label",
+      "explicit null label",
+      "inbound label binding filtering",
+      "entropy label"
+    ],
+    "dropTargets": [
+      "provides ways of improving load balancing by eliminating the need for DPI at transit LSRs",
+      "LSR receives an MPLS header with the label set to 3",
+      "packet is encapsulated in MPLS with the option of copying the IP precedence to EXP bits",
+      "controls the amount of memory used to store LDP label bindings advertised by other devices"
+    ],
+    "correctMapping": {
+      "provides ways of improving load balancing by eliminating the need for DPI at transit LSRs": ["entropy label"],
+      "LSR receives an MPLS header with the label set to 3": ["implicit null label"],
+      "packet is encapsulated in MPLS with the option of copying the IP precedence to EXP bits": ["explicit null label"],
+      "controls the amount of memory used to store LDP label bindings advertised by other devices": ["inbound label binding filtering"]
+    }
+  },
+  "460": {
+    "type": "drag_and_drop",
+    "instruction": "Drag and drop the terminology from the left onto the corresponding definitions on the right.",
+    "draggableItems": [
+      "Multiprotocol Label Switching (MPLS)",
+      "Label Distribution Protocol (LDP)",
+      "Forwarding Equivalence Class (FEC)",
+      "Provider Edge (PE)",
+      "Label Switched Path (LSP)"
+    ],
+    "dropTargets": [
+      "set of packets with similar characteristics that might be bound to the same MPLS label",
+      "data-carrying mechanism that is independent of any data link layer protocol",
+      "router that functions as the ingress and/or egress router to the MPLS domain",
+      "route through an MPLS network, defined by a signaling protocol such as LDP or BGP",
+      "mechanism by which two routers exchange label mapping information"
+    ],
+    "correctMapping": {
+      "set of packets with similar characteristics that might be bound to the same MPLS label": ["Forwarding Equivalence Class (FEC)"],
+      "data-carrying mechanism that is independent of any data link layer protocol": ["Multiprotocol Label Switching (MPLS)"],
+      "router that functions as the ingress and/or egress router to the MPLS domain": ["Provider Edge (PE)"],
+      "route through an MPLS network, defined by a signaling protocol such as LDP or BGP": ["Label Switched Path (LSP)"],
+      "mechanism by which two routers exchange label mapping information": ["Label Distribution Protocol (LDP)"]
+    }
+  },
+  "461": {
+    "type": "drag_and_drop",
+    "instruction": "Drag and drop the descriptions from the left onto the corresponding MPLS components on the right.",
+    "draggableItems": [
+      "FEC",
+      "LSP",
+      "LER",
+      "LSR",
+      "LDP"
+    ],
+    "dropTargets": [
+      "routers in the core of the provider network known as P routers",
+      "all traffic to be forwarded using the same path and same label",
+      "routers that connect to the customer routers known as PE routers",
+      "used for exchanging label mapping information between MPLS enabled routers",
+      "path along which the traffic flows across an MPLS network"
+    ],
+    "correctMapping": {
+      "routers in the core of the provider network known as P routers": ["LSR"],
+      "all traffic to be forwarded using the same path and same label": ["FEC"],
+      "routers that connect to the customer routers known as PE routers": ["LER"],
+      "used for exchanging label mapping information between MPLS enabled routers": ["LDP"],
+      "path along which the traffic flows across an MPLS network": ["LSP"]
+    }
+  },
+  "462": {
+    "type": "drag_and_drop",
+    "instruction": "Drag and drop the operations from the left onto the locations where the operations are performed on the right.",
+    "draggableItems": [
+      "assigns labels to unlabeled packets",
+      "performs penultimate hop popping",
+      "handles traffic between multiple VPNs",
+      "reads the labels and forwards the packet based on the labels"
+    ],
+    "dropTargets": [
+      "Label Switch Router Box 1",
+      "Label Switch Router Box 2",
+      "Label Edge Router Box 1",
+      "Label Edge Router Box 2"
+    ],
+    "correctMapping": {
+      "Label Switch Router Box 1": ["performs penultimate hop popping"],
+      "Label Switch Router Box 2": ["reads the labels and forwards the packet based on the labels"],
+      "Label Edge Router Box 1": ["assigns labels to unlabeled packets"],
+      "Label Edge Router Box 2": ["handles traffic between multiple VPNs"]
+    }
+  },
+  "463": {
+    "type": "drag_and_drop_code",
+    "instruction": "Drag and drop the code snippets from the bottom onto the boxes in the configuration to resolve the issue.",
+    "draggableItems": [
+      "out",
+      "any any",
+      "permit",
+      "in",
+      "::/0 le 128",
+      "deny"
+    ],
+    "dropTargets": [
+      "ipv6 prefix-list 10 seq 5 ACTION",
+      "ipv6 prefix-list 10 seq 10 ACTION",
+      "ipv6 prefix-list 10 seq 10 TARGET",
+      "distribute-list prefix-list 10 DIRECTION"
+    ],
+    "correctMapping": {
+      "ipv6 prefix-list 10 seq 5 ACTION": ["deny"],
+      "ipv6 prefix-list 10 seq 10 ACTION": ["permit"],
+      "ipv6 prefix-list 10 seq 10 TARGET": ["::/0 le 128"],
+      "distribute-list prefix-list 10 DIRECTION": ["in"]
+    }
+  }
+}
