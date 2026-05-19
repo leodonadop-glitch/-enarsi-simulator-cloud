@@ -15,7 +15,7 @@ const DeviceCli = ({ name, expected, showAnswer }) => {
       e.preventDefault();
       const lines = cliInput.split('\n');
       const currentLine = lines[lines.length - 1];
-      const promptMatch = currentLine.match(/^(.*?#\s*|>.*?)(.*)$/);
+      const promptMatch = currentLine.match(/^(.*?[#>]\s*)(.*)$/);
       if (!promptMatch) return;
       
       const prompt = promptMatch[1];
@@ -29,7 +29,7 @@ const DeviceCli = ({ name, expected, showAnswer }) => {
       e.preventDefault();
       const lines = cliInput.split('\n');
       const currentLine = lines[lines.length - 1];
-      const promptMatch = currentLine.match(/^(.*?#\s*|>.*?)(.*)$/);
+      const promptMatch = currentLine.match(/^(.*?[#>]\s*)(.*)$/);
       const prompt = promptMatch ? promptMatch[1] : simulator.getPrompt();
       const typed = promptMatch ? promptMatch[2] : '';
       
@@ -45,7 +45,7 @@ const DeviceCli = ({ name, expected, showAnswer }) => {
       const currentLine = lines[lines.length - 1];
       
       // Extract what the user typed after the prompt
-      const promptMatch = currentLine.match(/^(.*?#\s*|>.*?)(.*)$/);
+      const promptMatch = currentLine.match(/^(.*?[#>]\s*)(.*)$/);
       let typed = '';
       if (promptMatch) {
         typed = promptMatch[2];
