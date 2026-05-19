@@ -4,6 +4,8 @@ export const MODES = {
   GLOBAL_CONFIG: 'GLOBAL_CONFIG',
   INTERFACE_CONFIG: 'INTERFACE_CONFIG',
   ROUTER_CONFIG: 'ROUTER_CONFIG',
+  ROUTER_AF_CONFIG: 'ROUTER_AF_CONFIG',
+  VRF_CONFIG: 'VRF_CONFIG',
   VLAN_CONFIG: 'VLAN_CONFIG',
   LINE_CONFIG: 'LINE_CONFIG'
 };
@@ -14,6 +16,8 @@ const MODE_PROMPTS = {
   [MODES.GLOBAL_CONFIG]: '(config)#',
   [MODES.INTERFACE_CONFIG]: '(config-if)#',
   [MODES.ROUTER_CONFIG]: '(config-router)#',
+  [MODES.ROUTER_AF_CONFIG]: '(config-router-af)#',
+  [MODES.VRF_CONFIG]: '(config-vrf)#',
   [MODES.VLAN_CONFIG]: '(config-vlan)#',
   [MODES.LINE_CONFIG]: '(config-line)#'
 };
@@ -32,7 +36,6 @@ export class IOSSimulator {
     this.expectedCommands = expectedCommands;
 
     // Very basic command registry for now. 
-    // In the future, this should be split into modular files.
     this.commands = [
       // USER EXEC
       { mode: MODES.USER_EXEC, name: 'enable', aliases: ['en'], handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } },
@@ -51,27 +54,48 @@ export class IOSSimulator {
       { mode: MODES.GLOBAL_CONFIG, name: 'interface', handler: (args) => { this.state.mode = MODES.INTERFACE_CONFIG; return ''; } },
       { mode: MODES.GLOBAL_CONFIG, name: 'router', handler: (args) => { this.state.mode = MODES.ROUTER_CONFIG; return ''; } },
       { mode: MODES.GLOBAL_CONFIG, name: 'vlan', handler: (args) => { this.state.mode = MODES.VLAN_CONFIG; return ''; } },
-      { mode: MODES.GLOBAL_CONFIG, name: 'ip', handler: () => { return ''; } }, // Added to catch ip commands
+      { mode: MODES.GLOBAL_CONFIG, name: 'vrf', handler: (args) => { this.state.mode = MODES.VRF_CONFIG; return ''; } },
+      { mode: MODES.GLOBAL_CONFIG, name: 'ip vrf', handler: (args) => { this.state.mode = MODES.VRF_CONFIG; return ''; } },
+      { mode: MODES.GLOBAL_CONFIG, name: 'line', handler: (args) => { this.state.mode = MODES.LINE_CONFIG; return ''; } },
+      { mode: MODES.GLOBAL_CONFIG, name: 'ip', handler: () => { return ''; } },
       { mode: MODES.GLOBAL_CONFIG, name: 'exit', handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } },
       { mode: MODES.GLOBAL_CONFIG, name: 'end', handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } },
 
       // INTERFACE CONFIG
-      { mode: MODES.INTERFACE_CONFIG, name: 'ip', handler: () => { return ''; } }, // ip address, ip nhrp
-      { mode: MODES.INTERFACE_CONFIG, name: 'no', handler: () => { return ''; } }, // no shutdown
+      { mode: MODES.INTERFACE_CONFIG, name: 'ip', handler: () => { return ''; } },
+      { mode: MODES.INTERFACE_CONFIG, name: 'no', handler: () => { return ''; } },
       { mode: MODES.INTERFACE_CONFIG, name: 'shutdown', handler: () => { return '%LINK-3-UPDOWN: Interface, changed state to down'; } },
       { mode: MODES.INTERFACE_CONFIG, name: 'exit', handler: () => { this.state.mode = MODES.GLOBAL_CONFIG; return ''; } },
       { mode: MODES.INTERFACE_CONFIG, name: 'end', handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } },
 
       // ROUTER CONFIG
       { mode: MODES.ROUTER_CONFIG, name: 'network', handler: () => { return ''; } },
+      { mode: MODES.ROUTER_CONFIG, name: 'address-family', handler: (args) => { this.state.mode = MODES.ROUTER_AF_CONFIG; return ''; } },
       { mode: MODES.ROUTER_CONFIG, name: 'no', handler: () => { return ''; } },
       { mode: MODES.ROUTER_CONFIG, name: 'exit', handler: () => { this.state.mode = MODES.GLOBAL_CONFIG; return ''; } },
       { mode: MODES.ROUTER_CONFIG, name: 'end', handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } },
 
+      // ROUTER AF CONFIG
+      { mode: MODES.ROUTER_AF_CONFIG, name: 'network', handler: () => { return ''; } },
+      { mode: MODES.ROUTER_AF_CONFIG, name: 'autonomous-system', handler: () => { return ''; } },
+      { mode: MODES.ROUTER_AF_CONFIG, name: 'exit', handler: () => { this.state.mode = MODES.ROUTER_CONFIG; return ''; } },
+      { mode: MODES.ROUTER_AF_CONFIG, name: 'end', handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } },
+
+      // VRF CONFIG
+      { mode: MODES.VRF_CONFIG, name: 'rd', handler: () => { return ''; } },
+      { mode: MODES.VRF_CONFIG, name: 'exit', handler: () => { this.state.mode = MODES.GLOBAL_CONFIG; return ''; } },
+      { mode: MODES.VRF_CONFIG, name: 'end', handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } },
+
       // VLAN CONFIG
       { mode: MODES.VLAN_CONFIG, name: 'name', handler: () => { return ''; } },
       { mode: MODES.VLAN_CONFIG, name: 'exit', handler: () => { this.state.mode = MODES.GLOBAL_CONFIG; return ''; } },
-      { mode: MODES.VLAN_CONFIG, name: 'end', handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } }
+      { mode: MODES.VLAN_CONFIG, name: 'end', handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } },
+
+      // LINE CONFIG
+      { mode: MODES.LINE_CONFIG, name: 'password', handler: () => { return ''; } },
+      { mode: MODES.LINE_CONFIG, name: 'login', handler: () => { return ''; } },
+      { mode: MODES.LINE_CONFIG, name: 'exit', handler: () => { this.state.mode = MODES.GLOBAL_CONFIG; return ''; } },
+      { mode: MODES.LINE_CONFIG, name: 'end', handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } }
     ];
   }
 

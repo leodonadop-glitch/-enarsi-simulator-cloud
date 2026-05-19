@@ -24,6 +24,18 @@ function runTests() {
   let lastHist = sim.state.history[sim.state.history.length - 1];
   console.assert(lastHist.normalized === 'interface tunnel 0', "Test 6 Failed: Normalized history failed");
   
+  sim.execute('exit');
+  console.assert(sim.state.mode === 'GLOBAL_CONFIG', "Test 7 Failed: Exit from interface failed");
+  
+  sim.execute('router eigrp 10');
+  console.assert(sim.state.mode === 'ROUTER_CONFIG', "Test 8 Failed: router eigrp transition failed");
+  
+  sim.execute('address-family ipv4 vrf Admin');
+  console.assert(sim.state.mode === 'ROUTER_AF_CONFIG', "Test 9 Failed: address-family transition failed");
+  
+  sim.execute('exit');
+  console.assert(sim.state.mode === 'ROUTER_CONFIG', "Test 10 Failed: Exit from router-af failed");
+  
   console.log("All tests completed!");
 }
 
