@@ -36,6 +36,30 @@ function runTests() {
   sim.execute('exit');
   console.assert(sim.state.mode === 'ROUTER_CONFIG', "Test 10 Failed: Exit from router-af failed");
   
+  sim.execute('exit');
+  console.assert(sim.state.mode === 'GLOBAL_CONFIG', "Test 10.5 Failed: Exit to global failed");
+  
+  sim.execute('route-map INTERNET1 permit 10');
+  console.assert(sim.state.mode === 'ROUTE_MAP_CONFIG', "Test 11 Failed: Route map transition failed");
+  
+  sim.execute('exit');
+  console.assert(sim.state.mode === 'GLOBAL_CONFIG', "Test 12 Failed: Exit from route-map failed");
+  
+  sim.execute('crypto isakmp policy 10');
+  console.assert(sim.state.mode === 'ISAKMP_POLICY_CONFIG', "Test 13 Failed: Isakmp policy transition failed");
+  
+  sim.execute('exit');
+  console.assert(sim.state.mode === 'GLOBAL_CONFIG', "Test 14 Failed: Exit from isakmp failed");
+  
+  sim.execute('key chain CISCO_KEY');
+  console.assert(sim.state.mode === 'KEY_CHAIN_CONFIG', "Test 15 Failed: Key chain transition failed");
+  
+  sim.execute('key 1');
+  console.assert(sim.state.mode === 'KEY_CHAIN_KEY_CONFIG', "Test 16 Failed: Key chain key transition failed");
+  
+  sim.execute('end');
+  console.assert(sim.state.mode === 'PRIV_EXEC', "Test 17 Failed: Cascaded end from key-chain-key failed");
+  
   console.log("All tests completed!");
 }
 

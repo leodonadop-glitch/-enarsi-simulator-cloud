@@ -7,7 +7,15 @@ export const MODES = {
   ROUTER_AF_CONFIG: 'ROUTER_AF_CONFIG',
   VRF_CONFIG: 'VRF_CONFIG',
   VLAN_CONFIG: 'VLAN_CONFIG',
-  LINE_CONFIG: 'LINE_CONFIG'
+  LINE_CONFIG: 'LINE_CONFIG',
+  ROUTE_MAP_CONFIG: 'ROUTE_MAP_CONFIG',
+  ISAKMP_POLICY_CONFIG: 'ISAKMP_POLICY_CONFIG',
+  IPSEC_PROFILE_CONFIG: 'IPSEC_PROFILE_CONFIG',
+  CRYPTO_TRANSFORM_CONFIG: 'CRYPTO_TRANSFORM_CONFIG',
+  EXT_NACL_CONFIG: 'EXT_NACL_CONFIG',
+  KEY_CHAIN_CONFIG: 'KEY_CHAIN_CONFIG',
+  KEY_CHAIN_KEY_CONFIG: 'KEY_CHAIN_KEY_CONFIG',
+  TIME_RANGE_CONFIG: 'TIME_RANGE_CONFIG'
 };
 
 const MODE_PROMPTS = {
@@ -19,7 +27,15 @@ const MODE_PROMPTS = {
   [MODES.ROUTER_AF_CONFIG]: '(config-router-af)#',
   [MODES.VRF_CONFIG]: '(config-vrf)#',
   [MODES.VLAN_CONFIG]: '(config-vlan)#',
-  [MODES.LINE_CONFIG]: '(config-line)#'
+  [MODES.LINE_CONFIG]: '(config-line)#',
+  [MODES.ROUTE_MAP_CONFIG]: '(config-route-map)#',
+  [MODES.ISAKMP_POLICY_CONFIG]: '(config-isakmp)#',
+  [MODES.IPSEC_PROFILE_CONFIG]: '(ipsec-profile)#',
+  [MODES.CRYPTO_TRANSFORM_CONFIG]: '(cfg-crypto-trans)#',
+  [MODES.EXT_NACL_CONFIG]: '(config-ext-nacl)#',
+  [MODES.KEY_CHAIN_CONFIG]: '(config-keychain)#',
+  [MODES.KEY_CHAIN_KEY_CONFIG]: '(config-keychain-key)#',
+  [MODES.TIME_RANGE_CONFIG]: '(config-time-range)#'
 };
 
 // Basic IOS Simulator Engine
@@ -57,6 +73,13 @@ export class IOSSimulator {
       { mode: MODES.GLOBAL_CONFIG, name: 'vrf', handler: (args) => { this.state.mode = MODES.VRF_CONFIG; return ''; } },
       { mode: MODES.GLOBAL_CONFIG, name: 'ip vrf', handler: (args) => { this.state.mode = MODES.VRF_CONFIG; return ''; } },
       { mode: MODES.GLOBAL_CONFIG, name: 'line', handler: (args) => { this.state.mode = MODES.LINE_CONFIG; return ''; } },
+      { mode: MODES.GLOBAL_CONFIG, name: 'route-map', handler: (args) => { this.state.mode = MODES.ROUTE_MAP_CONFIG; return ''; } },
+      { mode: MODES.GLOBAL_CONFIG, name: 'crypto isakmp policy', handler: (args) => { this.state.mode = MODES.ISAKMP_POLICY_CONFIG; return ''; } },
+      { mode: MODES.GLOBAL_CONFIG, name: 'crypto ipsec profile', handler: (args) => { this.state.mode = MODES.IPSEC_PROFILE_CONFIG; return ''; } },
+      { mode: MODES.GLOBAL_CONFIG, name: 'crypto ipsec transform-set', handler: (args) => { this.state.mode = MODES.CRYPTO_TRANSFORM_CONFIG; return ''; } },
+      { mode: MODES.GLOBAL_CONFIG, name: 'ip access-list', handler: (args) => { this.state.mode = MODES.EXT_NACL_CONFIG; return ''; } },
+      { mode: MODES.GLOBAL_CONFIG, name: 'key chain', handler: (args) => { this.state.mode = MODES.KEY_CHAIN_CONFIG; return ''; } },
+      { mode: MODES.GLOBAL_CONFIG, name: 'time-range', handler: (args) => { this.state.mode = MODES.TIME_RANGE_CONFIG; return ''; } },
       { mode: MODES.GLOBAL_CONFIG, name: 'ip', handler: () => { return ''; } },
       { mode: MODES.GLOBAL_CONFIG, name: 'exit', handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } },
       { mode: MODES.GLOBAL_CONFIG, name: 'end', handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } },
@@ -95,7 +118,53 @@ export class IOSSimulator {
       { mode: MODES.LINE_CONFIG, name: 'password', handler: () => { return ''; } },
       { mode: MODES.LINE_CONFIG, name: 'login', handler: () => { return ''; } },
       { mode: MODES.LINE_CONFIG, name: 'exit', handler: () => { this.state.mode = MODES.GLOBAL_CONFIG; return ''; } },
-      { mode: MODES.LINE_CONFIG, name: 'end', handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } }
+      { mode: MODES.LINE_CONFIG, name: 'end', handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } },
+
+      // ROUTE MAP CONFIG
+      { mode: MODES.ROUTE_MAP_CONFIG, name: 'set', handler: () => { return ''; } },
+      { mode: MODES.ROUTE_MAP_CONFIG, name: 'exit', handler: () => { this.state.mode = MODES.GLOBAL_CONFIG; return ''; } },
+      { mode: MODES.ROUTE_MAP_CONFIG, name: 'end', handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } },
+
+      // ISAKMP POLICY CONFIG
+      { mode: MODES.ISAKMP_POLICY_CONFIG, name: 'encr', handler: () => { return ''; } },
+      { mode: MODES.ISAKMP_POLICY_CONFIG, name: 'hash', handler: () => { return ''; } },
+      { mode: MODES.ISAKMP_POLICY_CONFIG, name: 'authentication', handler: () => { return ''; } },
+      { mode: MODES.ISAKMP_POLICY_CONFIG, name: 'group', handler: () => { return ''; } },
+      { mode: MODES.ISAKMP_POLICY_CONFIG, name: 'lifetime', handler: () => { return ''; } },
+      { mode: MODES.ISAKMP_POLICY_CONFIG, name: 'exit', handler: () => { this.state.mode = MODES.GLOBAL_CONFIG; return ''; } },
+      { mode: MODES.ISAKMP_POLICY_CONFIG, name: 'end', handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } },
+
+      // IPSEC PROFILE CONFIG
+      { mode: MODES.IPSEC_PROFILE_CONFIG, name: 'set', handler: () => { return ''; } },
+      { mode: MODES.IPSEC_PROFILE_CONFIG, name: 'exit', handler: () => { this.state.mode = MODES.GLOBAL_CONFIG; return ''; } },
+      { mode: MODES.IPSEC_PROFILE_CONFIG, name: 'end', handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } },
+
+      // CRYPTO TRANSFORM CONFIG
+      { mode: MODES.CRYPTO_TRANSFORM_CONFIG, name: 'mode', handler: () => { return ''; } },
+      { mode: MODES.CRYPTO_TRANSFORM_CONFIG, name: 'exit', handler: () => { this.state.mode = MODES.GLOBAL_CONFIG; return ''; } },
+      { mode: MODES.CRYPTO_TRANSFORM_CONFIG, name: 'end', handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } },
+
+      // EXT NACL CONFIG
+      { mode: MODES.EXT_NACL_CONFIG, name: 'permit', handler: () => { return ''; } },
+      { mode: MODES.EXT_NACL_CONFIG, name: 'deny', handler: () => { return ''; } },
+      { mode: MODES.EXT_NACL_CONFIG, name: 'exit', handler: () => { this.state.mode = MODES.GLOBAL_CONFIG; return ''; } },
+      { mode: MODES.EXT_NACL_CONFIG, name: 'end', handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } },
+
+      // KEY CHAIN CONFIG
+      { mode: MODES.KEY_CHAIN_CONFIG, name: 'key', handler: () => { this.state.mode = MODES.KEY_CHAIN_KEY_CONFIG; return ''; } },
+      { mode: MODES.KEY_CHAIN_CONFIG, name: 'exit', handler: () => { this.state.mode = MODES.GLOBAL_CONFIG; return ''; } },
+      { mode: MODES.KEY_CHAIN_CONFIG, name: 'end', handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } },
+
+      // KEY CHAIN KEY CONFIG
+      { mode: MODES.KEY_CHAIN_KEY_CONFIG, name: 'key-string', handler: () => { return ''; } },
+      { mode: MODES.KEY_CHAIN_KEY_CONFIG, name: 'exit', handler: () => { this.state.mode = MODES.KEY_CHAIN_CONFIG; return ''; } },
+      { mode: MODES.KEY_CHAIN_KEY_CONFIG, name: 'end', handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } },
+
+      // TIME RANGE CONFIG
+      { mode: MODES.TIME_RANGE_CONFIG, name: 'periodic', handler: () => { return ''; } },
+      { mode: MODES.TIME_RANGE_CONFIG, name: 'absolute', handler: () => { return ''; } },
+      { mode: MODES.TIME_RANGE_CONFIG, name: 'exit', handler: () => { this.state.mode = MODES.GLOBAL_CONFIG; return ''; } },
+      { mode: MODES.TIME_RANGE_CONFIG, name: 'end', handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } }
     ];
   }
 
@@ -175,22 +244,48 @@ export class IOSSimulator {
       handled = true;
     } else {
       // Command prefix matching
-      const parts = trimmed.split(' ');
-      const cmdName = parts[0].toLowerCase();
-      const matches = available.filter(c => c.name.startsWith(cmdName));
+      const typedWords = trimmed.toLowerCase().split(/\s+/);
+      
+      let matches = available.filter(c => {
+        const cmdWords = c.name.split(/\s+/);
+        const limit = Math.min(typedWords.length, cmdWords.length);
+        for (let i = 0; i < limit; i++) {
+          if (!cmdWords[i].startsWith(typedWords[i])) return false;
+        }
+        return true;
+      });
+
+      if (matches.length > 0) {
+        // If we matched multiple, try to narrow down to those where we typed at least as many words
+        // as the command name (meaning it's not a partial command)
+        const fullMatches = matches.filter(c => typedWords.length >= c.name.split(/\s+/).length);
+        
+        if (fullMatches.length > 0) {
+          // Find the most specific match (longest command name)
+          let maxLen = 0;
+          fullMatches.forEach(c => {
+            const len = c.name.split(/\s+/).length;
+            if (len > maxLen) maxLen = len;
+          });
+          matches = fullMatches.filter(c => c.name.split(/\s+/).length === maxLen);
+        }
+      }
 
       if (matches.length === 1) {
-        finalCommandToHistory = matches[0].name + (parts.length > 1 ? ' ' + parts.slice(1).join(' ') : '');
-        output = matches[0].handler(parts.slice(1)) || '';
+        const c = matches[0];
+        const cmdWordsLen = c.name.split(/\s+/).length;
+        finalCommandToHistory = c.name + (typedWords.length > cmdWordsLen ? ' ' + typedWords.slice(cmdWordsLen).join(' ') : '');
+        output = c.handler(typedWords.slice(cmdWordsLen)) || '';
         handled = true;
       } else if (matches.length > 1) {
-        const exact = matches.find(c => c.name === cmdName || c.name === trimmed);
+        // Maybe exact string match?
+        const exact = matches.find(c => c.name === trimmed);
         if (exact) {
-          finalCommandToHistory = exact.name + (parts.length > 1 ? ' ' + parts.slice(1).join(' ') : '');
-          output = exact.handler(parts.slice(1)) || '';
+          finalCommandToHistory = exact.name;
+          output = exact.handler([]) || '';
           handled = true;
         } else {
-          return `% Ambiguous command: "${cmdName}"`;
+          return `% Ambiguous command: "${trimmed}"`;
         }
       }
     }
