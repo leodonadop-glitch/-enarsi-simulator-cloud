@@ -7023,7 +7023,13 @@
     "questionText": "Item 31 0f 50 (Lab, Q1) [ Show Answer |\nGuidelines\nThis is a lab item in which tasks will be performed on virtual devices.\n1. Refer to the Tasks tab to view the tasks for this lab item.\n2. Refer to the Topology tab to access the device console(s) and perform the tasks.\n3. Console access is available for all required devices by clicking the device icon or using the tab(s) above the console window.\n4. All necessary preconfigurations have been applied\n5. Do not change the enable password or hostname for any device.\n6. Save your configurations to NVRAM before moving to the next item.\n7. Click Next at the bottom of the screen to submit this lab and move to the next question.\n8. When Next is clicked, the lab closes and cannot be reopened\nTasks\nTroubleshoot R-WEST to achieve the desired results:\n1. The locally generated logs should have sequence numbers, date and msec time.\n2. The SNMP traps related to OSPF, OSPF participating interface, and neighbor state changes utilizing RFC1253-MIB OSPFv2 should be sent to SNMP\nserver.\nRWEST i  R-EAST\n=e fa ==\n= d\ngl QF\nEN Laur\nco co\nDSW-1 DSW-2\naK\n-\nASW-N | ox << ASW-LAN: |\nSOUPS Fo\noo J I\nma —\n=} a . q\n£5) s§\nSyslag® \"SNA Co\nof coe\nNMS LAN VLANs\n® A RWEST:\nR-WEST>en\nR-WEST#config t\nR-WEST(config)#service sequence-numbers\nR-WEST(config)#service timestamps log datetime msec\nR-WEST(configj#snmp-server enable traps ospf\nR-WEST(configj#end\nR-WEST#wr\n\n",
     "answerText": "",
     "correctAnswer": null,
-    "optionCount": 4
+    "optionCount": 4,
+    "labCommands": [
+      "! --- Router R-WEST ---",
+      "service sequence-numbers",
+      "service timestamps log datetime msec",
+      "snmp-server enable traps ospf"
+    ]
   },
   {
     "id": 465,
@@ -7035,7 +7041,17 @@
     "questionText": "Item 32 of 50 (Lab, Q2) [ Show Answer |\nGuidelines\nThis is alab item in which tasks will be performed on virtual devices.\n1. Refer to the Tasks tab to view the tasks for this lab tem.\n2. Refer to the Topology tab to access the device console(s) and perform the tasks.\n3. Console access is available for all required devices by clicking the device icon or using the tab(s) above the console window.\n4. All necessary preconfigurations have been applied\n5. Do not change the enable password or hostname for any device.\n6. Save your configurations to NVRAM before moving to the next item.\n7. Click Next at the bottom of the screen to submit this lab and move to the next question.\n8. When Nextis clicked, the lab closes and cannot be reopened\nTasks,\nTroubleshoot R-WEST to achieve the desired results:\n1. Allthe commands should be locally saved to the router as well as sent to the Syslog server except passwords.\n2. Allthe Cisco OSPF LSA traps should be sent to the SNMP server.\nRWEST ot  REAST\nSEO == q0\\0\nRQ od\neV goed 8\nDSW-1 DSW-2\n»: Je 23\nNY\nASPEN 33] ASW-LAN\nCC Be\n[ - LJ\nI\n4 450 - |\ne ERR\n$yslog ~~ SNMA [co EE\nNMS LAN VLANs\nO A RWEST:\nRWEST>en\nR-WESTé#configt\nR-WEST(config)#archive\nR-WEST(config-archive)#iog config\nR-WEST(config-archive-log-cfg)#iogging enable\nR-WEST(config-archive-log-cfg)#hidekeys\nR-WEST(config-archive-log-cfg)notify syslog\nR-WEST(config-archive-log-cfo)#exit\nR-WEST(config-archive)exit\nR-WEST(config)isnmp-server enable traps\nR-WEST(config)snmp-server enable traps ospf Isa\nR-WEST(config)snmp-server enable traps ospf cisco-specific Isa\nR-WEST(config)#end\nRWEST#wr\n\n",
     "answerText": "",
     "correctAnswer": null,
-    "optionCount": 4
+    "optionCount": 4,
+    "labCommands": [
+      "! --- Router R-WEST ---",
+      "archive",
+      " log config",
+      "  logging enable",
+      "  hidekeys",
+      "  notify syslog",
+      "snmp-server enable traps ospf lsa",
+      "snmp-server enable traps ospf cisco-specific lsa"
+    ]
   },
   {
     "id": 466,
@@ -7047,7 +7063,17 @@
     "questionText": "Item 33 of 50 (Lab, Q3) | Show Answer |\n\nGuidelines\n\nThis is a lab item in which tasks will be performed on virtual devices.\n\n1. Refer to the Tasks tab to view the tasks for this lab item.\n\n2. Refer to the Topology tab to access the device console(s) and perform the tasks.\n\n3. Console access is available for all required devices by clicking the device icon or using the tab(s) above the console window.\n\n4. All necessary preconfigurations have been applied\n\n5. Do not change the enable password or hostname for any device.\n\n6. Save your configurations to NVRAM before moving to the next item.\n\n7. Click Next at the bottom of the screen to submit this lab and move to the next question.\n\n8. When Next is clicked, the lab closes and cannot be reopened\n\nTasks\n\nTroubleshoot and resolve the issues to achieve these goals:\n\n1. Ensure that R6 can ping the prefix 10.9.99.9. Manipulate the first basic routing decision-making criteria of longest prefix match that if a router learns a route\nfrom different routing protocols, the longest matched prefix can be changed. Use decimal value of 75 if required to accomplish this. Do not use a route-map.\n\n2. Ensure that R2 loopback 1 reaches to R5's loopback 1 by following the path through R2, R4, R6 to R5 and R5 loopback 1 reaches R2's loopback 1 by\nfollowing the path through R5, R6, R4 to R2. Use metric values K1= 100000, K2=1, K3=255, K4=10, K5=1500 to modify the default metric in EIGRP if\nrequired. Do not add or modify the default-metric command under router eigrp 10. Do not use a route-map to set metrics.\n\n3. Ensure that on R3, prefix 10.0.56.6/32 uses the SP1 to route to the Internet, whereas prefix 172.16.12.2/32 uses the SP2 to route to the Internet. Do not use:\nBGP to accomplish this. Use the pre-configured route-maps INTERNET1 and INTERNET2 and modify to accomplish the task if required. Use the ping and\ntrace commands from R6 and R2 to prefixes 209.165.202.146 and 209.165.202.158, respectively to verify the results.\n\n? SP2 SP\n\nQu Bes 20z1583 Loo Zhe 165202 452\nLoh dog eR 20815052 SP CLot: 209.165.202.14632\n\nBRP, e00\\ ._3u(\"/e0n oar\n\nLeo’ Ao! fed\n\nRi 209.165 200.228/30 209.165.20023630_ ‘Rs\nHS ~ wit\n2), 0 on For\n10.0.\n1721613008 55 won 10038020\nor R O° \\\n¢ 05°F 05° 9\nEl ague ded Jed\noff (99)\n17246.12.0129 10.0.56.0/28\n‘OSPF Area 0 EIGRP AS 10\nAS R4 No)\n\nRc Ten TR x ©\nnD. Neg Y 0/0 AS\n20 23 0/0 WE\n\ncOUR2 [el <°R6\n2 RIP 49.0124\n[Interface | Address |\n| [Rnlo0 [10nnn24. po et %\n[Ra Lot _[10.nin ze] R010\nRs ane an\nOA R&\nRé4>en\nRé#config t\nRé(config)#router rip\nRé(config-router)#distance 75\nRé4(config-router)#router eigrp 10\nRd4(config-router)#no distance 255 0.0.0.0 255.255.255.255\nRé(config-router)#redistribute ospf 10 metric 100000 1 255 10 1500\nRé(config-router)#router ospf 10.\nRé(config-router)#redistribute eigrp 10 metric 10\nRé(config-router}#end\nRawr\nR3:\nR3>en\nRa#config t\nR3(config)#route-map INTERNET1 permit 10\nR3(config-route-map)#set ip next-hop 209.165.200.237\nR3(config-route-map)#route-map INTERNET2 permit 10\nR3(config-route-map)#set ip next-hop 209.165.200.229\nR3(config-route-map)#exit\nR3(config)#int e0/1\nR3(config-ifip policy route-map INTERNET1\nR3(config-if#int e0/0\nR3(config-ifip policy route-map INTERNET2\nR3(config-ifj#end\nR3#wr\n\n",
     "answerText": "",
     "correctAnswer": null,
-    "optionCount": 4
+    "optionCount": 4,
+    "labCommands": [
+      "! --- Router R4 ---",
+      "router rip",
+      " distance 75",
+      "router eigrp 10",
+      " no distance 255 0.0.0.0 255.255.255.255",
+      " redistribute ospf 10 metric 100000 1 255 10 1500",
+      "router ospf 10",
+      " redistribute eigrp 10 metric 10"
+    ]
   },
   {
     "id": 467,
@@ -7059,7 +7085,27 @@
     "questionText": "Item 34 of 50 (Lab, Q4) [ Show Answer |\n\nGuidelines\n\nThis is a lab item in which tasks will be performed on virtual devices.\n\n1. Refer to the Tasks tab to view the tasks for this lab item.\n\n2. Refer to the Topology tab to access the device console(s) and perform the tasks.\n\n3. Console access is available for all required devices by clicking the device icon or using the tab(s) above the console window.\n\n4. All necessary preconfigurations have been applied.\n\n5. Do not change the enable password or hostname for any device.\n\n6. Save your configurations to NVRAM before moving to the next item.\n\n7. Click Next at the bottom of the screen to submit this lab and move to the next question.\n\n8. When Next is clicked, the lab closes and cannot be reopened\n\nTasks\n\nTroubleshoot and resolve the issues to achieve these goals:\n\n1. Ensure that R5 can ping the prefix 10.9.99.9. Manipulate the first basic routing decision-making criteria that if a router learns a route from different routing\nprotocols the admin distance can be changed without using a route-map. Use decimal value of 85 if required to accomplish this.\n\n2. Ensure that R5 loopback 0 reaches to R2's loopback 0 by following the path through R5, R6, R4 to R2 and vice versa. Use metric values K1= 100000, K2=1,\nK3=265, K4=10, K5=1500 to modify the default metric in EIGRP if required. Do not add or modify the default-metric command under router eigrp 10. Do not\nuse a route-map.\n\n3. Ensure that on R3, prefix 10.0.0.0/8 uses the SP2 to route to the Internet, whereas prefix 172.16.0.0/12 uses the SP1 to route to the Internet. Do not use\nBGP to accomplish this. Use the pre-configured route-maps SP1 and SP2 and modify to accomplish the task if required. Use the ping and trace commands\nfrom R5 and R1 to verify results.\n\nLo0: 209.165.202.158/32 [3 a Lo0: 209.165.202.145/32,\\.\nLot: 2001682021502 { Lot: 209.165. Rasy\nSU eon) eon )\nJoe Aurd\nCRA 209.165.200224/30 (2565201 030 RS\nBE fu Bn\n172161305 0 Wl ag, 10035020\nR3\nel\n1721612029 10 100,560128)\n0 Bot © Eo\nSep OsPF Aread ONTAs 10\n00/0 172.16.24.0229 a y 10.0.46.0128 «0/1\nR2 R6\nRE 149.024 eh\n[interface Address | ale\nRao Jannanize || 008] p=\nTE cov\n[& Ro C\nOA R&\nRé=en\nRé#config t\nR4(config)#router rip\nR4(config-router)#distance 85\nR4(config-router)#router eigrp 10\nR4(config-router)#redistribute ospf 10 metric 100000 1 255 10 1500\nR4(config-router)#router ospf 10\nR4(config-router)#redistribute eigrp 10 metric 10\nRé(config-router)#end\nRé#wr\nR3:\nR3=en\nR3#config t\nR3(config)#route-map SP1 permit 10\nR3(config-route-map)#set ip next-hop 209.165 201.2\nR3(config-route-map)#route-map SP2 permit 10\nR3(config-route-map)#set ip next-hop 209.165.200.226\nR3(config-route-map)#exit\nR3(config)#int 0/0\nR3(config-if)#ip policy route-map SP1\nR3(config-ifyint 0/1\nR3(config-if)#ip policy route-map SP2\nR3(config-ifi#end\nR3#wr\n\n",
     "answerText": "",
     "correctAnswer": null,
-    "optionCount": 4
+    "optionCount": 4,
+    "labCommands": [
+      "! --- Router R4 ---",
+      "router rip",
+      " distance 85",
+      "router eigrp 10",
+      " no distance 255 0.0.0.0 255.255.255.255",
+      " redistribute ospf 10 metric 100000 1 255 10 1500",
+      "router ospf 10",
+      " redistribute eigrp 10 metric 10",
+      "",
+      "! --- Router R3 ---",
+      "route-map INTERNET1 permit 10",
+      " set ip next-hop 209.165.200.237",
+      "route-map INTERNET2 permit 10",
+      " set ip next-hop 209.165.200.229",
+      "interface e0/1",
+      " ip policy route-map INTERNET1",
+      "interface e0/0",
+      " ip policy route-map INTERNET2"
+    ]
   },
   {
     "id": 468,
@@ -7071,7 +7117,25 @@
     "questionText": "Item 35 of 50 (Lab, Q5) [ Show Answer |\nGuidelines\nThis is a lab item in which tasks will be performed on virtual devices.\n1. Refer to the Tasks tab to view the tasks for this lab item.\n2. Refer to the Topology tab to access the device console(s) and perform the tasks.\n3. Console access is available for all required devices by clicking the device icon or using the tab(s) above the console window.\n4. All necessary preconfigurations have been applied\n5. Do not change the enable password or hostname for any device.\n6. Save your configurations to NVRAM before moving to the next item.\n7. Click Next at the bottom of the screen to submit this lab and move to the next question.\n8. When Next is clicked, the lab closes and cannot be reopened\nTasks\nConfigure HUB and SPOKE routers according to the topology to achieve these goals:\n1. Configure mGRE neighborship to provide end-to-end reachability between Hub and Spokes.\n2. Configure NHRP authentication using password \"C1$c0123\". Use 180 sec hold time for NHRP members where NHS should maintain next hop client NBMA\nregistration messages for 60 sec. Verify configurations with Ping from PC1 to PC2 and PC3.\nQQ A\n4 Pct Qd\nRS $soP\neu® SN\nco co\nro li\n;\nAN\nGl bY\nJ *\nder] hel\nSAP “NN AN\ni ie Go 0 Y a G0 1%\nc\\e! vd WAN ic\n[¢ RS Ss (WAN 8\nof %, R1\nSpoke 2 Spoke 1\noY\noe ef\nose oS\ncOPC3  [Device[intf [IP address | PC2\n[PC1_ [e0/0 [10.100.0.10/24\n[Pc2_[e0/0 [10.100.1.10/24\n(Pca. [eo [10.100.2.10124\n[RO\" [Tun0]10.00.254124 oN\n[R10\" [Tun0[1000.124 | o\\\"\nou\" [R2_ [Tun0[10.0022ac]\noe Za\nOA RO\nRO>en\nRO0#config t\nRO(config)int tun0\nRO(config-ifj#tunnel mode gre multipoint\nRO(config-ifj#ip nhrp map multicast dynamic\nRO(config-if#ip nhrp authentication C1$c0123\nRO(config-ifj#ip nhrp registration timeout 60\nRO(config-ifj#ip nhrp holdtime 180\nRO(config-if#end\nRO#wr\nR1/R2:\nR1/R2(config)#int tun 0\nR1/R2(config-if#ip nhrp authentication C1$c0123\nR1/R2(config-if}#ip nhrp registration timeout 60\nR1/R2(config-if}#ip nhrp holdtime 180\nR1/R2(config-if end\nR1/R2#wr\n\n",
     "answerText": "",
     "correctAnswer": null,
-    "optionCount": 4
+    "optionCount": 4,
+    "labCommands": [
+      "! --- Router R0 ---",
+      "interface tun0",
+      "tunnel mode gre multipoint",
+      "ip nhrp map multicast dynamic",
+      "ip nhrp authentication Cisc0123",
+      "ip nhrp registration timeout 60",
+      "ip nhrp holdtime 180",
+      "end",
+      "wr",
+      "",
+      "! --- Router R1/R2 ---",
+      "interface tunnel 0",
+      "ip nhrp authentication Cisc0123",
+      "ip nhrp shortcut",
+      "end",
+      "wr"
+    ]
   },
   {
     "id": 469,
@@ -7083,7 +7147,43 @@
     "questionText": "Item 36 of 50(Exam C, Q6) | Show Answer |\nGuidelines\nThis i 3 ab em in which tasks will be performed on virual devices.\n1.\" Referto the Tasks tab to view the tasks fr tis fab tem.\n2. Referto the Topology tab to access the device console(s) and perform the tasks.\n3. Console access is available for all required devices by clicking the device icon or using the tab(s) above the console window.\n4. All necessary preconfigurations have been applied.\n5. Do not change the enable password or hostname for any device.\n6. Save your configurations to NVRAM before moving to the next item.\n7. Click Next athe bottom of the screen to submit this fab and move fo the next question.\n8. When Nextis clicked, the [ab closes and cannot be reopened\nTasks\n‘Configure IPSec security policy on tunnel interfaces to ensure data confidentiality and integrity where mGRE tunnels are up and running between HUB and SPOKE routers.\n1. Configure the ISAKMP policy parameters with the following attributes:\nAES255\nSis\nGroup2\nifetime 86400\n2. Ensure that GRE IP Header should be encrypted inside the IPSec packet. Verify IPSec security association and ISAKMP encrypted key. Use ISAKMP key \"abc123\".\n3. Configure a flexible ISAKMP Policy on the HUB fo add peers that have the dynamic P addresses where SPOKES must add HUB IP static entry using an encipted key. Use a single\n‘command to configure it. Use IPSec phase-2 transform-set name as T-SET and IPSec Profile name as IPSEC-PROFILE\".\nBM pc\nou 0!\n0 SP ad\nA sour cout\n(se) RO (51 HC\"\nn\nIN,\nYo \\,\nES\n5 ,\nid 3 *,\nSTEN)\nOORWAND 7 500\nX RAT osu\noa oe R1\nSpoke 2 Spoke 1 -\n_\nPC3 [Device [inti [IP Address | PC25\nRR A ET 10.1000.1024] (0\nced [pez [eon [10100134\n[Pca [e0 10.1002. 10124\n[Ro [Tun0[10.0.0.254/24\n[Rt [Tun0[1000.124 |\n[R2_ [Tun0[10.0.0.2/24\nOA RO\nRosen\nRo#configt\nRo(configy#crypto isakm policy 10\nRO(config-isakmp)#encr aes 256\nRO(config-isakmp)#hash sha256\nRO(config-isakmp)#authentication pre-share\nRO(config-isakmp)#group 2\nRRO(config-isakmp)#ifetime 86400\nRO(config-isakmp)#exit\n\"RO(config)#crypto isakmp key abc123 address 0.0.0.0\nRO(config)#crypto ipsec transform-set T-SET esp-aes 256 esp-sha256-hmac.\nRO(cfg-crypto-trans j#mode tunnel\nRRO(cfg-crypto-trans j#exit\nRO(config)#crypto ipsec profile IPSEC-PROFILE.\nRO(ipsec-profile)#set transform-set T-SET\nRO(ipsec-profile)#exit\n\"RO(config)#interface Tunnel0\n\"RO(config-iff#tunnel protection ipsec profile IPSEC-PROFILE\nRo(config ip nhrp map multicast dynamic\nRo(config fend\nRowe\nRIRZ:\nRotter-en\nRouteréconfigt\nRouter(config)#crypto isakmp policy 10\nRouter(config-isakmp)#encr aes 256\nRouter(config-isakmp)#hash sha256\nRouter(config-isakmp)#authentication pre-share\nRouter(config-isakmp)#group 2\nRouter(config-isakmp)#lifetime 86400\nRouter(config-isakmp)#exit\nRouter(config)#crypto isakmp key abc123 address 10.0.0.254\nRouter(config)#crypto ipsec transform-set T-SET esp-aes 256 esp-sha256-hmac\nRouter(cfg-crypto-transj#mode tunnel\nRouter(cfg-crypto-trans)#exit\nRouter(config)#crypto ipsec profile IPSEC-PROFILE.\nRouter(ipsec-profile)#set transform-set T-SET.\nRouter(ipsec-profile)#exit\nRouter(config)#interface Tunnel0\nRouter(config-ifi#tunnel protection ipsec profile IPSEC-PROFILE\nRouter(config-ififend\nRouteréwr\n\n",
     "answerText": "",
     "correctAnswer": null,
-    "optionCount": 4
+    "optionCount": 4,
+    "labCommands": [
+      "! --- Router R0 ---",
+      "crypto isakmp policy 10",
+      "encr aes 256",
+      "hash sha256",
+      "authentication pre-share",
+      "group 2",
+      "lifetime 86400",
+      "crypto isakmp key abc123 address 10.0.0.254",
+      "crypto ipsec transform-set T-SET esp-aes 256 esp-sha256-hmac",
+      "mode tunnel",
+      "crypto ipsec profile IPSEC-PROFILE",
+      "set transform-set T-SET",
+      "interface Tunnel0",
+      "tunnel protection ipsec profile IPSEC-PROFILE",
+      "ip nhrp map multicast dynamic",
+      "end",
+      "wr",
+      "",
+      "! --- Router R1/R2 ---",
+      "crypto isakmp policy 10",
+      "encr aes 256",
+      "hash sha256",
+      "authentication pre-share",
+      "group 2",
+      "lifetime 86400",
+      "crypto isakmp key abc123 address 10.0.0.254",
+      "crypto ipsec transform-set T-SET esp-aes 256 esp-sha256-hmac",
+      "mode tunnel",
+      "crypto ipsec profile IPSEC-PROFILE",
+      "set transform-set T-SET",
+      "interface Tunnel0",
+      "tunnel protection ipsec profile IPSEC-PROFILE",
+      "end",
+      "wr"
+    ]
   },
   {
     "id": 470,
@@ -7095,7 +7195,22 @@
     "questionText": "Hem 37 0f50 (Lab, Q7) [ Show Answer |\nGurteines\nThis 1s ab tem in which tasks wil be performed on virtual devices\n1. Refer to the Tasks tab to view the tasks for this lab item.\n2. Referto the Topology tab to access the device console(s) and perform the tasks.\n3. Console access is available for all required devices by clicking the device icon or using the tab(s) above the console window.\n4. All necessary preconfigurations have been applied.\n5. Do not change the enable password or hostname for any device.\n6. Save your configurations to NVRAM before moving to the next item.\n7. Click Next at the bottom of the screen to submit this lab and move to the next question.\n8. When Nextis clicked, the lab closes and cannot be reopened\nTasks\nTroubleshoot and resolve the issues on West and East routers to achieve these goals. The usemamelpassword and enable password is sco’ on all devices\n1 Ensure hat the west outer authorizes remote Users over sso use 8 0calCalabase Matching Usemmame as westadmin and the password fs westadminpass” Generate RSA 2048 bit\nkey. Modify the existing aaa policy name for configuration.\n2. Ensure that the ping is permitted to the east router daily from 9:00 AM to 6:00 PM only. Complete the task using a preconfigured access list, do not add any deny entries.\nISP\nRr\n«09%, 0\"\naur? 7 000 NO\nCOC CNS\net ey\n0 {On\noS oR\n! cur? Hu\n[<c} oo\n0/1 0/1\nEast West\ne000 00]\ndet $e\n[Name [interface [IP Address |\nsel WO West [00 | 192.16398\ncs\n| East [e00 [162168101\nSWi1 sw2\nOA West\nWesten\nwestreontigt\n\\West(configj#username westadmin password westadminpass\n‘West(config)#crypto key generate rsa modulus 2048\n‘West(config)#no aaa authentication login SSH_Connections.\n‘West(config)#aaa authentication login SSH_Connections local\nWest(config)#line vy 0 4\n‘West(config-line)#login authentication SSH_Connections.\nWest(config-linej#end\nwestur\nEast\nEasten\nEastreontot\nEast(config)#time-range blkicmp.\nEast(config-time-range #periodic daily 00:00 to 08:59\nEast(config-time-range)#exit\n[East(config)#ip access-list extended icmp-rule\nEast(config-ext-nacl)#permitip any any.\nEast(config-ext-nacl#exit\nEast(config)#int 0/0\nEast(config-ifj#ip access-group icmp-rule in\nEast(config-iff#¥end.\nEastin\n\n",
     "answerText": "",
     "correctAnswer": null,
-    "optionCount": 4
+    "optionCount": 4,
+    "labCommands": [
+      "! --- Router R1 ---",
+      "interface tunnel 0",
+      "ip nhrp authentication Cisc0123",
+      "ip nhrp shortcut",
+      "end",
+      "wr",
+      "",
+      "! --- Router R2 ---",
+      "interface tunnel 0",
+      "ip nhrp authentication Cisc0123",
+      "ip nhrp shortcut",
+      "end",
+      "wr"
+    ]
   },
   {
     "id": 471,
@@ -7107,7 +7222,15 @@
     "questionText": "Hem 38 of 50 (Lab, 08)\nGuidelines\nThis is a ab item in which tasks will be performed on virual devices.\n1.\" Referto the Tasks tab to view the tasks fr tis fab tem.\n2. Refer to the Topology tab to access the device console(s) and perform the tasks.\n3. Console access is available for all required devices by clicking the device icon or using the tab(s) above the console window.\n4. Allnecessary preconfigurations have deen applied.\n5. Do not change the enable password of hostname for any device.\n6. Save your configurations to NVRAM before moving to the next item.\n7. Click Next athe bottom of the screen to submit this fab and move fo the next question.\n8. When Nextis clicked, the ab closes and cannot be reopened\nTasks\n/ADMVPN network is preconfigured with tunnel 0 IP address 192.168.1.254 on the HUB, IP connectivity, crypto policies, profiles, and EIGRP AS 100. The NHRP password is ccnp123, and the.\nnetwork ID and tunnel key is EIGRP ASN. Do not nfroduce a satic routs.\nConfigure DMVPN connectivity between routers BR1 and BR2 to the HUB router using physical interface as the tunnel source to achieve these goals:\n1. Configure NHRP authentication, static IP-to-NBMA address maps, hold time 5 minutes, network ID, and server on branch router BR1.\n2. Configure NHRP authentication, static IP-to-NBMA address maps, hold time 5 minutes, network ID, and server on branch router BR2.\n3. Ensure that packet fragmentation is done before encryption to account for GRE and IPsec header and allow a maximum TCP segment size of 1360 on an IP MTU of 1400 on the tunnel\ninterfaces of both branch routers\n4. Apply an IPsec profile to the funnel. Verity that rect spoke-to-spoke funnel i functional between branch routers BR1 and BR2 by using traceroute to Ethenst 010 IP adress to get a full\nScore\net et\nFo ho\n95° - ©\nGeou® 17216.0.1/24 qeou®\ni i E00 12\nX 17218.00/24 XQ\n254 £00\nTunneld: [Ele Xo: 1910132\n5p 50°\nSure 254 (BAO © aun?\nFoie foes 0\nole x\n(< Ise. oN\n\\_10.10255.024 }\net et\nHo Ho\noP / oR 5 ©\nour su Aur\n0° 0° ©\nTunneio: 102 168:1.128 1 ZEON EO \\ 2 Tunnelo: 162.168.1.224\nLO: 10.10:10.1/32 LO: 10.10.102/32\n254 | E00 E00 [256\n12181020 | oR 1s202¢\n2pQ 1 | eoo 809 |\ngore: 3 Sune 3 Some\ncoe [Res =a co?\nTopology Diagram\nOA BRI\nER1en\nERf#configt\nBR1(config)#interface tunnel 0\nBR1(config-if}# ip nhrp authentication ccnp123\nBR1(config-ifj# ip nhrp network-id 100\nBR1(config-if}# ip nhrp map 192.168.1.254 10.10.255.254\nBR1(config-ifj# ip nhrp map multicast 10.10.255.254\nBR1(config-ifj# ip nhrp nhs 192.168.1.254\nBR1(config-if}# ip nhrp holdtime 300\nBR1(config-ifj# ip tcp adjust-mss 1360\nBR1(config-ifj# ip mtu 1400\nBR1(config-ifj# tunnel protection ipsec profile ccnp\nBR1(config-ifj# ip nhrp shortcut\nBR1(config-ifj#fend\nBRT wr\nRZ\nBRz-en\nBR#conigt\n'BR2(config)# interface tunnel 0\n'BR2(config-ifj# ip nhrp authentication ccnp123.\n'BR2(config-if}# ip nhrp network-id 100\n'BR2(config-if}# ip nhrp map 192.168.1.254 10.10.255.254.\nBR2(config-ifj# ip nhrp map multicast 10.10.255.254.\n'BR2(config-ifj# ip nhrp nhs 192.168.1.254\n'BR2(config-ifj# ip nhrp holdtime 300\nBR2(config-if# ip tcp adjust-mss 1360\nBR2(config-ifj# ip mtu 1400\n'BR2(config-ifj# tunnel protection ipsec profile ccnp.\nBR2(config-ifj# ip nhrp shortcut\nBR2(config-ifj# end.\nBRZ# wr\n\n",
     "answerText": "",
     "correctAnswer": null,
-    "optionCount": 4
+    "optionCount": 4,
+    "labCommands": [
+      "! --- Router R1 ---",
+      "interface tunnel 0",
+      "ip nhrp authentication Cisc0123",
+      "ip nhrp redirect",
+      "end",
+      "wr"
+    ]
   },
   {
     "id": 472,
@@ -7119,7 +7242,34 @@
     "questionText": "Item 39 of 50 (Lab, Q9)\nGurteines\nThis 5 a ab fem in which tasks wil be performed on virtual devices,\n1. Refer to the Tasks tab to view the tasks for this lab item.\n2. Referto the Topology tab to access the device console(s) and perform the tasks.\n3. Console access is available for all required devices by clicking the device icon or using the tab(s) above the console window.\n4. All necessary preconfigurations have been applied.\n5. Do not change the enable password or hostname for any device.\n6. Save your configurations to NVRAM before moving to the next item.\n7. Click Next atthe bottom of the screen to submit this lab and move to the next question.\n8. When Nextis clicked, the lab closes and cannot be reopened\nTasks N\\)\nA company is connected to an ISP and some of hie networks between the ISP and the company are not reachable, Troubleshaot and resale he ssues fo achieve these goals:\n1. Asingle [16 is advertised for all infrastructure-connected interfaces that belong to the 10.20 xx network using BGP network commands from border routers connected to the ISP.\n‘Configuration modification is allowed in R4 and R5 to achieve the results. Do not use the BGP aggregate command.\n2. R6 receives the ISP R2 Loopback2 from R4 and receives a summary address for both Loopbacks of ISP R2 from R4 or RS. Use BGP attribute local-preference, add <default value +\nrouter number, for example, for R6, use “default+6=value to be used\". Use the existing prefix lists or route maps with the sequence numbering starting at 10 and added in increments of\n“0\n3. R6 receives the ISP R2 Loopback from RS and receives a summary address for both Loopbacks of ISP R2 from R4 or RS using the same guidelines.\n4. RB advertises its Loopback /24 address through BGP.\nYears Ro Riauew Do\n9 §) oH RS)\nAe) dee PX tn lh saae. ) oo a\n& Ree Opens 1021682224 urns =) Rl\nesp Cas 5 Le 10102232 i oe\nAE S y) om SY Fd\nal Y —~T ; Y\n| Asesoo1 =: fgher RSS\nsy, [= Es, hy 3\n5 AES ON KS)\n& Qo XS 0 AS\nK Soe oS Pe SOBER G0 &\nos o> oy ue 0 ae” 0 EO\nced oe? Sega goed %\nPy E2 L520) 27 tl OG)\nA Q _—\n(Lo. f0 105 vm Rel BB 0 3 Bet 10.10.1033/%2 ¢\nRi JE 2 £03 o¢\n14E00 2) ep © Co\nPo pr 2 PRIN) = > == =\nNEDO o0T [roa oma” (oT 2 Naas aes] Sap ve\nedu aleon gu rN PERRO x\nioe om, CF 102045024760 or 5 amin 400 8\nGy ™ os )\nNg wn 03 EN Ty\n<Q Z, po iy\n& L0:102044/32 E03 Pg 08S E02 0 10.205.502\nFre 4 a ol il or\nAr vi AS ny STEIN 6 > et Le)\nOA 1 [& fod Re 07 oo SE) g\n© eT AS 65000 ge wr mssar oa REN\n1606 Lc L1:172.16.6 6/24CC 220!\n0 0 2 oN 0\n[2 2 PRCA [2\nVAS ~~ Topol Diagram pVAS\noS XS ogy, Dials as\nOA Rs o pa\nReon\nRa# config t\n\"Ré(config)# ip route 10.20.0.0 255.255.0.0 null 0.\nRd(config)# no ip prefix-list ASE5001-in\nRA(Confg)# ip prefciist ASS5001-n seq 10 permit 192168.2.0124\nRé4(config)# route-map AS65001-in permit 20\n\"Ré(config-route-map)# set local-preference 104\nRé(config-route-map)# end\nRd# clear ip bgp * soft\nRetr\nRs:\nRs>en 8) iN\nRo configt x\nR5(config)# ip route 10.20.0.0 255.255.0.0 null 0\nRS(config)# no ip prefix-list ASE5001-in\nR5(config)# ip prefix-list AS65001-in seq 10 permit 192.168.3.0124\nR5(config)# route-map AS65001-in permit 20\nR5(config-route-map)# set local-preference 105\nRS(config-route-map)# end\nR5# clear ip bgp * soft\nRetr\n[i\nR6# config t\n\"R6(config)# router bgp 65000\nR6(config-router)# address-family ipv4\nR6(config-router-af)# no network 172.16.6.0\n'R6(config-router-af)# network 172.16.6.0 mask 255.255.255.0\nR6(config-router-af)# end\nRerun\n\n",
     "answerText": "",
     "correctAnswer": null,
-    "optionCount": 4
+    "optionCount": 4,
+    "labCommands": [
+      "! --- Router R4 ---",
+      "ip route 10.20.0.0 255.255.0.0 null 0",
+      "no ip prefix-list AS65001-in",
+      "ip prefix-list AS65001-in seq 10 permit 192.168.2.0/24",
+      "route-map AS65001-in permit 20",
+      "set local-preference 104",
+      "clear ip bgp * soft",
+      "wr",
+      "",
+      "! --- Router R5 ---",
+      "ip route 10.20.0.0 255.255.0.0 null 0",
+      "no ip prefix-list AS65001-in",
+      "ip prefix-list AS65001-in seq 10 permit 192.168.3.0/24",
+      "route-map AS65001-in permit 20",
+      "set local-preference 105",
+      "clear ip bgp * soft",
+      "wr",
+      "",
+      "! --- Router R6 ---",
+      "router bgp 65000",
+      "address-family ipv4",
+      "no network 172.16.6.0",
+      "network 172.16.6.0 mask 255.255.255.0",
+      "end",
+      "wr"
+    ]
   },
   {
     "id": 473,
@@ -7131,7 +7281,22 @@
     "questionText": "Item 40 of 50 (Lab, Q10)\nGuidelines\nThis 5 a ab fem in which tasks wil be performed on virtual devices,\n1. Refer to the Tasks tab to view the tasks for this lab item.\n2. Referto the Topology tab to access the device console(s) and perform the tasks.\n3. Console access is available for all required devices by clicking the device icon or using the tab(s) above the console window.\n4. All necessary preconfigurations have been applied.\n5. Do not change the enable password or hostname for any device.\n6. Save your configurations to NVRAM before moving to the next item.\n7. Click Next atthe bottom of the screen to submit this lab and move to the next question.\n8. When Nextis clicked, the lab closes and cannot be reopened\nTasks\n\"HUB and SPOKE routers are configured using mGRE tunnels according to the topology. Configure HUB and SPOKE routers to achieve these goals:\n1. Configure NHRP authentication using password \"Ci$c0123\"\n2. Configure SPOKE routers to establish direct tunnels between them where LAN routes of should be learned from the tunnel interfaces.\nef ef\nSo pCi 0\n59 50\nur? ur®\nRe) 120)\nlco©’ CVC!\n’\noN\nSN\nvd 3\n’ .\net s, RG\no oo 7 LR © 508;\nX : AX, :\nAOI 20 EWAN Sau\nced +50 de;\nRI. 2% 5 Rao Ri\n| Spoke 2 Spoke 1\net ef\nSad\nfad 0.5%\n: i\nA [Device [itt [ipadéiess | PC2\n[PC1 |e0/0 |10.100.0.10/24\n[Pc2 [0/0 [10.100.1.10/24\n[Pc3  |e0/0 |10.100.2.10/24\n[Ri |Tun0 [10.00.1124 80 he!\n=k\n0 (R2__[Tun0[10.0.0.224)\noO! Sao\nOA RO:\nRoen\nRoscontgt\nRO(config)#interface tunnel 0\n\"RO(config-if)#ip nhrp authentication Ci$c0123\nRO(config-if#ip nhrp redirect\nRO(config-if#end\nRosur\nRiR2\nRoutersen\nRouter#config t\nRouter(config)#interface tunnel 0\nRouter#(config-ifj#ip nhrp authentication Ci$c0123\nRouters#(config-ifj#ip nhrp shortcut\nRouter#(config-iff#end\nRouter#ur\n\n",
     "answerText": "",
     "correctAnswer": null,
-    "optionCount": 4
+    "optionCount": 4,
+    "labCommands": [
+      "! --- Router R0 ---",
+      "interface tunnel 0",
+      "ip nhrp authentication Cisc0123",
+      "ip nhrp redirect",
+      "end",
+      "wr",
+      "",
+      "! --- Router R1/R2 ---",
+      "interface tunnel 0",
+      "ip nhrp authentication Cisc0123",
+      "ip nhrp shortcut",
+      "end",
+      "wr"
+    ]
   },
   {
     "id": 474,
@@ -7143,7 +7308,44 @@
     "questionText": "Htem 410750 (Exam D, Q1) [ Show Answer |\nGuidelines.\nThis is a ab item in which tasks will be performed on virual devices.\n1. Referto the Tasks tab fo view he tasks fr his [ab em.\n2. Refer to the Topology tab to access the device console(s) and perform the tasks.\n3. Console access is available for all required devices by clicking the device icon or using the tab(s) above the console window.\n4. Alnecessary preconfigurations have been applied.\n5. Da not change the enable password or hostname for any device.\n6. Save your configurations to NVRAM before moving to the next item.\n7. Click Next atthe bottom of the screen to submit his lab and move to the next question.\n8. When Nextis clicked, the ab closes and cannot be reopened\nTasks\n‘R2 and R3 are pre-configured. Complete the configuration on R1 for these tasks:\nTask1\n‘Complete the DMVPN phase 1 configuration on R1 to establish tunnel between R1-R2 and R1-R3. R1 must be configured to accept tunnel from any new spoke without additional\nconfiguration. Do not remove existing configurations from any device\nTask2\nConfigure R1 so that R2 and R3 learn each other networks advertised by EIGRP through the hub R1.\nIR1 1\nend ut eof\nONE PORN\nA! 0/1 N\nSs\n3\n3\nS\ns\nHEN 1\n0 '§ “iv]\nHNC hat\n0% Yom.\nNE e/g Ng02\nW $0\n»: 2;\n<0, £072\nSpoke2, ot Spoket |\nRay SF NEUR2\nAN [Device Loopback 1] \"\n10.11.4532\n[Ra [102222\nR3 [1033332\nOA Ri\nRisen\nRisconfigt\nR1(config)#interface tunnel\nR1(config-iff#tunnel source Loopback\nRi(config-ifj#tunnel mode gre multipoint\nRi(config-if#ip nhrp network-id 100.\nRi(confg-#ip nhrp map multicast dynamic.\nR1(config-iff#no ip split-horizon eigrp 1\nRi(config-if#end\nRidwr\n\n",
     "answerText": "",
     "correctAnswer": null,
-    "optionCount": 4
+    "optionCount": 4,
+    "labCommands": [
+      "! --- Router R2 ---",
+      "router eigrp 10",
+      "address-family ipv4 vrf Sales",
+      "network 10.0.0.0 0.0.0.3",
+      "network 10.0.0.4 0.0.0.3",
+      "autonomous-system 500",
+      "exit",
+      "address-family ipv4 vrf Admin",
+      "network 10.0.0.24 0.0.0.3",
+      "network 192.168.20.0 0.0.0.3",
+      "autonomous-system 600",
+      "end",
+      "wr",
+      "",
+      "! --- Router R3 ---",
+      "router eigrp 10",
+      "address-family ipv4 vrf Sales",
+      "network 10.0.0.8 0.0.0.3",
+      "network 10.0.0.4 0.0.0.3",
+      "autonomous-system 500",
+      "exit",
+      "address-family ipv4 vrf Admin",
+      "network 10.0.0.28 0.0.0.3",
+      "network 192.168.20.0 0.0.0.3",
+      "autonomous-system 600",
+      "end",
+      "wr",
+      "",
+      "! --- Router R6 ---",
+      "no router eigrp 500",
+      "router eigrp 600",
+      "network 10.0.0.28 0.0.0.3",
+      "network 10.10.10.6 0.0.0.0",
+      "end",
+      "wr"
+    ]
   },
   {
     "id": 475,
@@ -7155,7 +7357,15 @@
     "questionText": "fem 42 of 50 (Exam, 02)\nGuidelines.\nThis is a ab item in which tasks will be performed on virual devices.\n1. Referto the Tasks tab fo view he tasks fr his [ab em.\n2. Referto the Topology tab to access the device console(s) and perform the tasks,\n3. Console access is available for all required devices by clicking the device icon or Using the tab(s) above the console window.\n4. Alnecessary preconfigurations have been applied.\n5. Da not change the enable password or hostname for any device.\n6. Save your configurations to NVRAH before moving fo the net tem.\n7. Click Next atthe bottom of the screen to submit his lab and move to the next question.\n8. When Nextis clicked, the ab closes and cannot be reopened\nTasks\n‘Complete the tasks below:\nTask 1:\nUse fhe predefined Sales and Admin VRFs (interfaces configured) fo complete the configurations on R2 and R3 using these requirements:\n1. Use EIGRP process 10\n2. Donotuse PLS\n3. The Sales VRF resides in AS 500\n4. The Admin VRF resides in AS 600\n5 R1andR4 should advertise and ping Loopbackd through Sales VRF.\nTask2\nThere is packet oss when R3 pings R&'s Loopback 0 in VRF Admin. Resolve the issue and confirm these facts:\n1. R3 and RS must form an EIGRP neighbor relationship under AS600\n2. R3 must be able fo receive all routes from RS and Rin VRF Admin\n3. R3 must be able fo ping Loopback 0 prefixes of RS and R in VRF Admin\nNote: Do not configure VRFs on R1, Ré, RS, and Rs. Disable automatic summarization in EIGRP on all outers.\nR1 R4\n-\nSO oud\nJoos NE\nWN W\npe 2]\n= S|\n£: PRS\nEIGRP AS 500\not\neo v0 600\nor 601 10004130 0/1 Sh\n3 S03 1921682003003 BS\n02 02\n| |. EtGRpAS600 ||.\n2 2 =\n3 S|\nZoo[&t [1010101 HOO\napf [Re [1010102 Ny\n\\Nebr iN) e022\nww Tr\n[Re [1010104\nRS 1010105 RE\n[Re [1010106\nOAR\nRazen\nRasconfigt\nR(confgirouter eigrp 10\nR(config-roufer}#address-familyipvé vif Sales\nR(config-1outer-a#network 100000003\nRa(config-router-a#network 100.0.40.0.0.3\nR(config-fouter-a)#autonomous-system 500\nR2(config-router-an#ext\nR2(config-fouler #address-family ipv4 wf Admin\nR(config-touter-a#network 1000.24 0.003\nR2(config-fouter-af#network 192.168.20.0 0.0.0.3\nR(confg-fouter-a#autonomous-system 600\nR(config-router-afj#end\nRar\nRE:\nRazen\nRasconfigt\nR3(confgirouter sigrp 10\nRa(config-roufer)#address-familyipvé vif Sales\nR3(config-router-aN#network 100.080.0.03\nR3(config-router-a#network 1000.4 0.0.03\nR3(config-router-a#autonomous-system 500\nR3(config-router-an#ext\nRa{config-fouler}#address-familyipvé vif Admin\nR3(config-fouter-a#network 1000.28 0.00.3\nR3(config-fouter-af#network 192.188.20.0 0.0.0.3\nR3(confi-fouter-af)#autonomous-system 600\nR3(config-fouter-aN#end\nRawr\nRE:\nRézen\nRédconfigt\nR6(configiino router eigrp 500\nRé(confgirouter eiarp 600\nRB(config-rouferiénetwork 10.0.0.26 0.0.0.3\nRé(config-rouferj#network 10.10.10.5 0.0.0.0\nRé(config-routerend\nRT\n\n",
     "answerText": "",
     "correctAnswer": null,
-    "optionCount": 4
+    "optionCount": 4,
+    "labCommands": [
+      "! --- Router R0 ---",
+      "interface tunnel 0",
+      "ip nhrp authentication Cisc0123",
+      "ip nhrp shortcut",
+      "end",
+      "wr"
+    ]
   },
   {
     "id": 476,
@@ -7167,7 +7377,40 @@
     "questionText": "NL VS = Er APL A = Er APL AT\ntem 4 of 0am D. 03\nGuidelines\nThE 5 ob tr wich tk wl prformed on ital devices.\n1. Refer tore Task ta 0 view te tas fortis fm.\n2. Reerto tr Topioy ta to sccess te device console) a prform te tas.\n3.\" Console access s avataie for a requed devios by cin the devio oo or usin the a(s) above the console window:\n4. casas preconturstons rave been spi\n5. rot crane he srs passer o haste for any dvi\n6. Save your configurations ts NYRAN befre roving oth nt fam.\n7. Cok Next tn Ett of th screen 1 stmt tis sand ve 1 5 ri ssn\n8. nen Nextis cick, te 3 csss an cant be res\nTasks\nTa\nCompete tr configuration on the 1 snd 52 reuters to stabi DUVPN tml using HO 3n 51 nd 52. Th ott fom 3h DUYPN 3454 tc re ut Belo, axa for tr UsDr Tr\nSUF Snd S12 rt 5 sb 13 5 50m ths 13 match ded Sut\nBl#show dmvpn\nLegend: Attrb --> S - Static, D - Dynamic, I - Incomplete\nN - NATed, L - Local, X - No Socket\nT1 - Route Installed, T2 - Nexthop-override\nC - CTS capable\n# Ent --> Number of NHRP entries with same NBMA peer\nNHS Status: E --> Expecting Replies, R --> Responding\nUpDn Time --> Up or Down Time for a Tunnel\nInterface: Tunnel1@, IPv4 NHRP Details\nType:Spoke, NHRP Peers:2, mn) §\n# Ent Peer NBMA Addr Peer Tunnel Add State uUpDn Tm Attrb\n1 172.16.0.2 192.168.0.1 up 00:01:35 S\n1.172.16.0.6 192.168.0.10 up 00:00:18 D\nUi re recone a 3d Ps tie, const confi on HO 1 rst rind as evn HO 2nd 51d 2 in tas parameters:\n1.1GAKIP poly Parameters\nKeys 81 220\nEveypton: Advanoas Encryption Standard\nDir rn Gog 4\nharenteston Fesrare\nCeimezeon\nHao Secure Hash Standard 2 (51251)\n2 Pre Shared Key: AaRiKey\n3 es Paemetes\nE50 Eneypon Tsrsfor: ESF wih 293.5 AES ancygton\nE50 Aurantaston Trmtorn: S57 ith SHAZS auhentoston\nVase Trapt\n€00  e0t\n1077030 Ho of\nSway 2508 800) eS 008\nSa W\n8\n00\ni |\nC0 ei2 WR\neR ISP SY\nQo Zar\n7 &,\n& &.\n&\n0/0, $00\nBh 2 Sek B82 |\nsofa cio we\nWES WHS\n= 8\nlo\neof § 800\nShe) Sw2\noR\nOo Ho\nHosen\nHoman t\nO{contrypt aso transfor. set Ad TRANSFORM spss 220 esp srs\nEo(crg yp arsmod anspor\nHOCH cpio arses\nHolcantgiorypt pass prfie AGRI PROFILE\nOlgas parle rasta se AR TRANSFORM\nHofpses ofp\nHOGonfgieartace uaveltd\nHeong etna protection pss gofe AGRY PROFILE\nHOlcant 1p hp map mitsast\nHoleantg 0 hp rede\nHolGant eens\nHom\nsie\nFaso\nRoutamonta t\nRouaoonigeatartace nnelld\nRoutarooni en tre destination\nRotarcons tunnel mode 1 mizont\nRoteroontiy 5 ep short\nFoutarconti send\nRoster\n\n",
     "answerText": "",
     "correctAnswer": null,
-    "optionCount": 4
+    "optionCount": 4,
+    "labCommands": [
+      "! --- Router HO ---",
+      "crypto isakmp key AdRt_Key address 0.0.0.0",
+      "interface tunnel0",
+      "tunnel mode gre multipoint",
+      "ip nhrp redirect",
+      "ip nhrp network-id 10",
+      "ip nhrp map multicast dynamic",
+      "end",
+      "wr",
+      "",
+      "! --- Router B1 ---",
+      "crypto ipsec profile AdRT_PROFILE",
+      "set transform-set AdRT_TRANSFORM",
+      "crypto isakmp key AdRt_Key address 0.0.0.0",
+      "interface Tunnel10",
+      "no tunnel destination",
+      "tunnel mode gre multipoint",
+      "ip nhrp shortcut",
+      "tunnel protection ipsec profile AdRT_PROFILE",
+      "end",
+      "wr",
+      "",
+      "! --- Router B2 ---",
+      "crypto ipsec profile AdRT_PROFILE",
+      "set transform-set AdRT_TRANSFORM",
+      "interface Tunnel10",
+      "no tunnel destination",
+      "tunnel mode gre multipoint",
+      "ip nhrp shortcut",
+      "end",
+      "wr"
+    ]
   },
   {
     "id": 477,
@@ -7179,7 +7422,28 @@
     "questionText": "tim 4120 (Bam D, 04\nproms\nte BY gh ke wpm on gf\n1.._Refer to the Tasks tab to view the tasks for this lab item.\n2. Refer to the Topology tab to acoess the device console(s) and perform the tasks.\n3. Console access is avaiable for al required devices by cicking the device icon of using the tabs) above the console window.\n4. ai necessary precenfigurations have been apples.\n5... Do not change the enable password or hostname for any device.\n6. save your configurations to NVRAM before moving to the next item.\n7. Gick Next at the bottom of the screen to submit this lab and move to the next question.\n8. When Next is cicked, the lab closes and cannot be reopened.\n>\nAS a\ntide\nSHATNER PRR ES WWI NPE a POOR\n1. Use EIGRP process 500\n2. Do not use MPLS.\n3. The Finance VRF resides in AS 100\n4. The Admin VRF resides in AS 200\n5. R2 shouki be able to ping RS and RS Loopback 0s.\n6. Do not remove R¥'s Ethemet 0/0 interface configuration.\n7. Configuration statements that are not required shoukd be removed\nwe\nSat Doines tm: EO og oh rine\n1. R3 and R4 establish an EIGRP neighborship in the Finance VRF.\n2. R1 and R4 should be able to reach each other's Loopback 0\nTAC\nR1 R4\ngL x\nAO Nd\n2 WBE\nWN eon No £00\n8 3\n: :\nSs ah\n= DK SX\n3 A ~.13) = GC\n<-'EIGRP 100-Finanse\nQe naa\nR2 |e0/0 e00| R3\n01 172.16.0.0/30 e011\nS03 101004730 603\ne0r2 012)\nR g oh\nLL EIGRP 200-Admin\nWE WET oo\nVUE [ooesliospbecke]  £\n2 SoPbact 8\nEr um | 8\n5 111132 2\n[R2 [222202\noz [Ry [333332 e02| 1\n2d\nmes [Rs [555 50a 6\n[re |ees632\nsy\nNos\nes\nEs om sry 0\nea\nmy rt 1\nBe woe rman TSR 555\nEssen 2 603055\nee\nio\nBees ty vt 1 Ab.\nfia\nee en 1310815503\nbe ie eR\nem\nb\n{5\nSu\nmr)\noss 2\netd\nyrs wt\nRS ee reer TSR 5553\nsven 2 6030583\ni ree Ly\nfeta\nmoa dey vt 1 a\neat WEA 0055\nee emt 1108 0503\npm mt A\nbossa\n=\n&\nTN\nnet\nty co 1561 CHAN\nfoes heli\nfrase A\nema\nHe oe\nfetes\nA\n(Ere\nReed\n\n",
     "answerText": "",
     "correctAnswer": null,
-    "optionCount": 4
+    "optionCount": 4,
+    "labCommands": [
+      "! --- Router West ---",
+      "username westadmin password westadminpass",
+      "crypto key generate rsa modulus 2048",
+      "aaa authentication login SSH_Connections local",
+      "aaa authorization exec SSH_Connections local",
+      "line vty 0 4",
+      "login authentication SSH_Connections",
+      "end",
+      "wr",
+      "",
+      "! --- Router East ---",
+      "time-range blkicmp",
+      "periodic daily 00:00 to 08:59",
+      "ip access-list extended icmp-rule",
+      "permit ip any any",
+      "interface e0/0",
+      "ip access-group icmp-rule in",
+      "end",
+      "wr"
+    ]
   },
   {
     "id": 478,
@@ -7191,7 +7455,46 @@
     "questionText": "Hem 45 of 50(Exam D, 05)\nGuidelines\nThis is a ab fem in which tasks wil be performed on virtual devices,\n1. Refer to the Tasks tab to view the tasks for this lab item.\n2. Referto the Topology tab to access the device console(s) and perform the tasks.\n3. Console access is available for all required devices by clicking the device icon or using the tab(s) above the console window.\n4. All necessary preconfigurations have been applied.\n5. Do not change the enable password or hostname for any device.\n6. Save your configurations to NVRAM before moving to the next item.\n7. Click Next atthe bottom of the screen to submit this lab and move to the next question.\n8. When Nextis clicked, the lab closes and cannot be reopened\nTasks\n‘Complete the tasks below:\nTasi1\nan engineer configured R1 as the DHCP server for RE however, RS does nat receve a response tos DHCP request. Troubleshoot the configurations and resolve th issue.\nTask2\nR315 connected to outers Ré and RS using these link setings:\nPrimary Link: R3 > R5 (192.168.1.4/30)\n‘Secondary Link: R3 > R4 (192.168.1.0/30)\n‘An engineer attempts to configure IP SLA and route tracking to ensure the Secondary link comes up if the Primary link fails. Load balancing of the links is not desired. Troubleshoot the\nConfiguration and resolve th Issue.\nNote: Use the pre-configured track and IP SLA numbers.\nTasca\nAn engineer configured Netow on outer R23 Ethemet 0/0 fo monitor the ingress and egress aff towards the ISP. The engineer entered the show flow monitor ISP 1-monior cach format\ntable and received his message:\n5 Flow lonior. 15 1-monitr has no cache\nTroubleshoot the configuration and resolve th issue\n== Netflow Collector\nR1 \\adet ee x\nSX Soa |\na § 2\nERE = 2 eon\nCO 5 oS\n2 AQ\n9\nE i\n€0/1| 0/0, R3\nER 10.1254.4/30 Sd\nSW1 E32 E x\nEJ 1\" a0 CINCO\nre e02f N01 oi\no00 EN)\ncc B Head Offiee'}\nb> &\n[= 0\nS = 12\n2000) * 00\nI AL 3 —~ ye 9\nsw2 OS 0\\© 8 9\n: ERT)\nsciedsbi VLAN 20 OF SR\n1012024\nBranch SNSP\nod\nCa\n00/0 x\n— ok | |e00] Seon GE)\n= — 4 So\nal RS <0\nTa\\ox au\nRES ood\nOA sw\nSwzsen\n‘SW2#config t\n‘SW2(config)#int vian 20\n‘SW2(config-if}#ip helper-address 10.1.1.1\n‘SW2(config-iff¥end\nSuzan\nRy\nRien\nRascontgt\nR3(config)#track 5 ip sla 1 reachability\nR3(config-track)#exit\nR3(config)#ip sla schedule 1 life forever start-time now\nR3(config)#interface 0/0\nR3(config-if#ip flow monitor ISP1-monitor input\nR3(config-if)#ip flow monitor ISP1-monitor output\nR3(config-iff#end\nRatur\n\n",
     "answerText": "",
     "correctAnswer": null,
-    "optionCount": 4
+    "optionCount": 4,
+    "labCommands": [
+      "! --- Router R2 ---",
+      "router eigrp 100",
+      "address-family ipv4 vrf Finance",
+      "network 10.0.0.0 0.0.0.3",
+      "network 172.16.0.0 0.0.0.3",
+      "autonomous-system 100",
+      "exit",
+      "address-family ipv4 vrf Admin",
+      "network 10.0.0.24 0.0.0.3",
+      "network 10.0.0.4 0.0.0.3",
+      "autonomous-system 200",
+      "end",
+      "wr",
+      "",
+      "! --- Router R3 ---",
+      "router eigrp 20",
+      "address-family ipv4 vrf Finance",
+      "network 10.0.0.8 0.0.0.3",
+      "network 172.16.0.0 0.0.0.3",
+      "autonomous-system 100",
+      "exit",
+      "address-family ipv4 vrf Admin",
+      "network 10.0.0.28 0.0.0.3",
+      "network 10.0.0.4 0.0.0.3",
+      "autonomous-system 200",
+      "end",
+      "wr",
+      "",
+      "! --- Router R4 ---",
+      "key chain CISCO_KEY_CHAIN",
+      "key 1",
+      "key-string CISCO123",
+      "interface e0/0",
+      "ip authentication key-chain eigrp 100 CISCO_KEY_CHAIN",
+      "ip authentication mode eigrp 100 md5",
+      "end",
+      "wr"
+    ]
   },
   {
     "id": 479,
@@ -7203,7 +7506,23 @@
     "questionText": "wn ermEnn en\nGuidelines\nPi TE tm in ih ts wt porto on vat devices.\n1. Refer to the Tasks tab to view the tasks for tis lab tem.\n2. Refer to the Topology tab to acoess the device console(s) and perform the tasks.\n3. Console access is avaiable for al required devices by cicking the device icon of using the tabs) above the console window.\n4. ai necessary precenfigurations have been apples.\n5... Do not change the enatie password or hostname for any device.\n6. save your configurations to NVRAM before moving to the next tem.\n7. Click Next at the bottom of the screen to submit this lab and move to the next question.\n8. When Next s cicked, the lab closes and cannot be reopened.\nTasks\nimate oe conturaion anh HO oir abi DUP rl sin GRE tna HO and 513d 52 To ait from sho DINPN shu mic th it ble, xc or i Us Ti\n‘HO#show dmvpn\nRETA RENE re FEA a ir SS 2% ESSIEN WEN\nInterface: Tunnell@, IPv4 NHRP Details Type:Hub, NHRP\nPeers:2, N., & I<; SG x 3\n# Ent Peer NBMA Addr Peer Tunnel Add State Upbn Tm Attrb’\n1 209.165.202.129 192.168.0.10 UP 2de2h D\n1,209.165.200.225 192.168.0.20 UP 2dath’D 5\nime dynam yo skin vey AR Key argh he ied yi pnts ad Ps fia AGL PROFILE. orplt th cofiuatn o anny an 3 ali een HO 20 1,52 rss.\nNota oo at comers Tah 2 uf Yo wi ses fe esi. se some NE aber om 31 and 53 Sim it face on a od ler cain on futon fo sa th onl vo HO rotr f recived. SW and\n52 shi nso HO’ Laci\n= EN\n* 0.15-0/30 et\nSw So Cag HO\nSP : AL\njoo) od 8 2\noC! o% iS\nSES\nFle\nYS\n; 07 AN\nNE ¥ NL\nRSS wel 3 DN a5 ket\n400 SRR\netC NETS 2:\n© o> NCIX?\nps HO So,\nBe’ ht &,\n* S £3 oy\n &F 2, NT\nOP a Kl\n’A \\% 1\ngt go oct\nBaP 82\n00 RI\ngett coe [eo\nol 3\n3 5\n= 9\n3 ies S|\nNE p ln\nef\none p<\n*® ft=>° Sk\n200 100\nOA Ho\nfren\nfret\nHongo ask ey A Key sins 0000\nrived clair\nfried aii\nHoare 5p rp ere\n£m op revr 1\nHon fm op map mest yar\njr\nprice\n=\naver\nSteet\nSeon psa pote Ades, PROFLE\nSi oeeeerbosans ustom-se Sen TRANSFORM\nSparse\nSlope ask ey A Key sss 0000\npes hnided\nSlot en pdr\nition sie ming iy\nSion ep trp shoes\n2 cota atone aceon se of Ad PROFILE\npeta\nfe\n=\nsen\nfrat\nSalata to ges pots has, PROFLE\nEiloeecarboms musta se Sen TRANSFORM\nEle ptson\nSalim tapotatace elt)\nSot en pasion\nSalami iennna mode ge mist\n2am 1p 1p shore\nrata\now\n\n",
     "answerText": "",
     "correctAnswer": null,
-    "optionCount": 4
+    "optionCount": 4,
+    "labCommands": [
+      "! --- Router SW2 ---",
+      "interface vlan 20",
+      "ip helper-address 10.1.1.1",
+      "end",
+      "wr",
+      "",
+      "! --- Router R3 ---",
+      "track 5 ip sla 1 reachability",
+      "ip sla schedule 1 life forever start-time now",
+      "interface e0/0",
+      "ip flow monitor ISP1-monitor input",
+      "ip flow monitor ISP1-monitor output",
+      "end",
+      "wr"
+    ]
   },
   {
     "id": 480,
@@ -7215,7 +7534,25 @@
     "questionText": "tem 47 of 50(Exam D, 07) [ Show Answer |\nGuidelines\nThis 5 a ab fm in which tasks wil be performed on virtual devices,\n1. Refer to the Tasks tab to view the tasks for this lab item.\n2. Referto the Topology tab to access the device console(s) and perform the tasks.\n3. Console access is available for all required devices by clicking the device icon or using the tab(s) above the console window.\n4. All necessary preconfigurations have been applied.\n5. Do not change the enable password or hostname for any device.\n6. Save your configurations to NVRAM before moving to the next item.\n7. Click Next atthe bottom of the screen to submit this lab and move to the next question.\n8. When Nextis clicked, the lab closes and cannot be reopened\nTasks\n‘Complete the tasks below:\nTasi1\nAn engineer attempted to configure R1 as the DHCP server for R6 using the settings below however, RE does not receive a response to its DHCP request. Troubleshoot the configurations:\nand resolve the Issue.\nDHCP pool name = Branch-1\nNetwork = 1012024\nDefault route = 101.2254\nDomain name = cisco com\nTask?\nRS is configured with HTTP senvices enabled. An engineer attempted to configure IP SLA on R2 to monitor port 80 on RS, but the operation is not running. Troubleshoot the problem and\nfesolve the Issue.\nTask\nNetfow i enabled on SW1 to monitor the trafic flow toward SP-1. While monitoring the Netfow aff on SW an enginser noices the flow statistics entries are removed afer 15 seconds but\ntls expected that the entries will emai vsibi for 5 minutes. Troubleshoot the problem and resolve he ssi.\net b\nRQ 0\n00\" ST R2\new a\npL AQ\nE\n80/0] e0/1 R\n£02. 199168954030 0/0 EEE\noxo\nBs J e011\non NG /\n'gle03 3\ng E\n= z\n3 ps\n5 Z\n< of\n9 oO\n~le0/0 Ras “foo\nros a8) Se\nSW2 WER4\nWV\ne0/1 ei)\n2 S\n2] =\ni 2\n°\n3 > ak\nXO pra Tel [-]\npe 0 oan?\nRe WT Rs\nOA Rt\nRiven\nRisconfigt\nRi(config)#ip dhcp pool Branch-1\nR1(dhcp-config)#no default-router 10.1.1.254\nR1(dhcp-config)#default-router 10.1.2.254\nR1(dhcp-config)#end.\nRiswr\nrz\nRoen\nRescontgt\nR2(config)#ip sla schedule 1 start-time now life forever\nR2(config)#end\nRa#wr\nswt:\nswisen\nSwtscontigt\n‘SW1(config)#ip flow-cache timeout inactive 300\n‘SW1(config)#end.\nSwi\n\n",
     "answerText": "",
     "correctAnswer": null,
-    "optionCount": 4
+    "optionCount": 4,
+    "labCommands": [
+      "! --- Router R1 ---",
+      "ip dhcp pool Branch-1",
+      "no default-router 10.1.2.254",
+      "default-router 10.1.2.254",
+      "end",
+      "wr",
+      "",
+      "! --- Router R2 ---",
+      "ip sla schedule 1 start-time now life forever",
+      "end",
+      "wr",
+      "",
+      "! --- Router SW1 ---",
+      "ip flow-cache timeout inactive 300",
+      "end",
+      "wr"
+    ]
   },
   {
     "id": 481,
@@ -7227,7 +7564,47 @@
     "questionText": "Hem 48 of SO(Exam D, 08) [ Show Ans\nGuidelines\nThis i a lab fem in which tasks wil be performed on virtual devices.\n1. Referto the Tasks tab o view the tasks for tis ab tem.\n2. Refer to the Topology tab to access the device console(s) and perform the tasks.\n3. Console access is avaiable for all required devices by cicking he device con or using th tabs) above the console window.\n4. Al necessary preconiquratons have been apple.\n5. Do not change the enable password or hostname fo any device.\n6. Save your configurations to NVRAN before moving fo the net tem.\n7. Cick Next at the bottom of the screen to sub this lab and move to the next question.\n8. Vihen Next s cicked, the lab closes and cannot be reopened\nTasks\nCompt th tasks below:\nTask 1\nUse the predefined Fnance and Securty VRFs (terfaces configured) fo compete the configurations on R2 and 3 using these requirments\n1. Use EIGRP process 10\n2. Donotuse PLS.\n3. Do not use auto-summary in EIGRP.\n4. The Finance VRF resides i AS 100\n5. The Securty VRF resides in AS 200\n6. R2 shou be able to ping R3's Ethernet 010 P adress facing Ré fom is own Enernet 010 nerface as the source\nTaskz\nThere i a 100% packet oss when R3 pings RE's Loopback 3 nerface in the Securty VRF. Resolve the issue and confirm these facts:\n1. R3 and RS establish an EIGRP neighbor relationship in AS200\n2. R3 receives ll networks through EKGRP i the Security VRF from RS without missing any routes\n3. R3 receives a summarized 172.16.0.0/18 prefic n the Securty VRF from RE through EIGRP. Do not use ip summary-address command instead use EIGRP basic routing concept.\nNote: Do not configure VRFs on R1, Ré, RS, and RS.\nR1 R4\nset\nSOI8” 0)\nJog\" PT EE\nNON WW\n8 H\nE g\nE 2\nE g\nEIGRP 100-Finance\nedi AO «00 R3: |\nR21880 1 10004m0 eon a\nAN ©03  192.168.20.0/30 8DI3\n202) c02\nEIGRR 200-Security ||\nls =\n[> 2\n5 [Device[Loopbacko] ©\noR Tro10102 SB)\nSYNOA [Rs [1010103 Woy,\n[Re J1010104 ©.\n[Rs. \"10.1010\nR5. [ge [1010106 Re\noA Rr\nRasen\nRzsconfot\nRo(config#no router sigrp 10\nRo(configsrouer cigrp 10\nR2(config rouery#no auto-summary\nR2(config-router)#address-famiy ipvé rf Finance\nR2(config-router-afinetwork 10.00.0 00.03\nR2(config-router-afinetwork 10.00.4 0.0.03\nR2(config-router-af#autonomous-system 100\nRo(config-router-afext\nR2(config-router)#address-famiy pus rf Securty\nR2(config-router-afinetviork 10.00.24 0.0.0.3\nR2(config-ruter-afinetviork 192.165.20.0 0.00.3\nR2(conig-router-af#autonomous-system 200\nRo(config-router-afend\nRazr\nrR:\nRasen\nRasconig t\nRa(config#no router ig 10\nRa(configerouter cigrp 10\nR3(config-routery#no auto-summary\nR3(config-router)#address-famiy ipv4 rf Finance\nR3{confg-router-afinetwork 10.00.6 00.03\nR3(config-router-afinetwork 10.0.4 0.0.03\nR3(confg-router-af#autonomous-system 100\nRa(config-route-afext\nR3{config-route)¢address- family pv rf Security\nR3(config-rouer-afnetviork 10.00.28 0.0.0.3\nR(config-router-afnetwork 192.168.200 0.00.3\nR3(config-router-af#autonomous-system 200\nR{config-router-afifend\nRar\nre:\nRosen\nRetconfgt\nRS(confg)#p route 172.16.0.0 255.255.0.0 nul 0\nRe(config#router carp 200\nR(confg-routerénetwork 10.0.026 0.00.3\nR{config-routerénetwork 172.16.0.0 00.256 265\nRS{coniig-router)#eigr stub safc conected\nRS(config rouerj#end\nRetr\n\n",
     "answerText": "",
     "correctAnswer": null,
-    "optionCount": 4
+    "optionCount": 4,
+    "labCommands": [
+      "! --- Router R2 ---",
+      "router eigrp 10",
+      "no auto-summary",
+      "address-family ipv4 vrf Finance",
+      "network 10.0.0.0 0.0.0.3",
+      "network 172.16.0.0 0.0.0.3",
+      "autonomous-system 100",
+      "exit",
+      "address-family ipv4 vrf Admin",
+      "network 10.0.0.24 0.0.0.3",
+      "network 10.0.0.4 0.0.0.3",
+      "autonomous-system 200",
+      "end",
+      "wr",
+      "",
+      "! --- Router R3 ---",
+      "router eigrp 10",
+      "no auto-summary",
+      "address-family ipv4 vrf Finance",
+      "network 10.0.0.8 0.0.0.3",
+      "network 172.16.0.0 0.0.0.3",
+      "autonomous-system 100",
+      "exit",
+      "address-family ipv4 vrf Admin",
+      "network 10.0.0.28 0.0.0.3",
+      "network 10.0.0.4 0.0.0.3",
+      "autonomous-system 200",
+      "end",
+      "wr",
+      "",
+      "! --- Router R6 ---",
+      "ip route 172.16.0.0 255.255.0.0 null 0",
+      "router eigrp 100",
+      "network 10.0.0.28 0.0.0.3",
+      "network 172.16.0.0 0.0.255.255",
+      "eigrp stub static connected",
+      "end",
+      "wr"
+    ]
   },
   {
     "id": 482,
@@ -7239,7 +7616,29 @@
     "questionText": "1. Refer te Tasks st view ds ri im.\n2. Refer she Taio sso ccs oe hic corsets) re perro ks.\n3. Cormct aco i avaible fr a recive devices clicking dice can si S648) ve  corece wow.\n4. recor recaigasors ov bon pio.\n5. Doct charge ts rte psswerd ax safari.\n6. save your configurations i NVRAM bxore mowing etn.\nTick Nort emo of gr crm 1 si a vd ve he cuesin.\n8. Wn Morte chicka tr i comes rd corres rend\n=\na\nPaced S\n3. Tre Suds VF rics AS 500. ).\n4. Toe cin VRE resides AS 00 L\n5. Rar 3 sien EIGRP faces in i especie VRE cu Ea\n1B. R2(VRF Suds) nd Re (Nor VF) os esti EGR faccy fee alc Ay ces ioc cori ay eres fd\nEVN AS IRS ARI «J 4 SJ Ti\n1. Rind Rms essen EGR rcpt resoretip in ASD\n2. Rt ri Rt ond vers vd ng ch c's Lrg in fn Sees VRE\n2020s mrt crt res oy 05 Bebe tm mi\nR1 RI\nyet\nNe xe)\nNSE\nwi eo 00\n8 y # 3 X\n3 Ss\n4d\n3 x\nRo SOP\nWE\" EIGRP AS 508°\nww oi\ne00 e00\nR2 1 10. e0/1\ne0/3 192.168.20.0/30 0/3 R3\n02 60/2\nx\n410 EIGRP.AS 600. |\nNO x N= ol\nWY c NY s\nIo\n[R2_ [1010102\npe |R2  fso2\n- 10.10.103 “-\n) [Re [Togo |\nRS [Rs [1010105 RE\n[Re [1010106\nSer\npray\nma nts\nJiao\nRe ansoos0s\nSSEeatasiino,\nCREE\nRios\novens\nfreon\nLt\nEee Sr\nBese Sita:\nHpmmomm\nts se\nmT\nfay 8 :\nEe S\npro\nBES\nTRE opmoor\nfeat\nfy\neT evs\ney ¢\nETT\nrs\nSts aii .\nSpm\nom XT IR\nLo Te ply\nSopa. ’\nHERE\nra\nfro Ry)\noch oo\nHom\nRais\na cov\neT ey\nES nw SR SAVER 2 DUE NE =\n\n",
     "answerText": "",
     "correctAnswer": null,
-    "optionCount": 4
+    "optionCount": 4,
+    "labCommands": [
+      "! --- Router R6 ---",
+      "interface e0/0",
+      "shutdown",
+      "no shutdown",
+      "end",
+      "wr",
+      "",
+      "! --- Router R2 ---",
+      "ip sla 1",
+      "ip sla 1 dns R6 name-server 192.168.1.1",
+      "ip sla schedule 1 life forever start-time now",
+      "end",
+      "wr",
+      "",
+      "! --- Router SW1 ---",
+      "int e0/2",
+      "no ip flow monitor flow-1 output",
+      "ip flow monitor flow-1 sampler sample-1 output",
+      "end",
+      "wr"
+    ]
   },
   {
     "id": 483,
@@ -7251,6 +7650,36 @@
     "questionText": "TORR A SEN PS Ve AS NY ar ANN Da ATO Dar AT oN Tab\nDe rd -\n2 te eT ao dss rte i\n3. Comme et erode eng nn sg et) re wo\nfe —\n\n5. omcurrwonse pms mmm mcs\n\n6. soe pour contests nA kr mings i.\n\n7. ck Wt mt mt i i ett et en, i\n8. Wren st icin ho acest 3\nCom tm si\n\nEta 0108 dcr ro vids lt rr 214 gC i 4 td ss fr 1 5 Tote rn rs\nBE tam mS cv br 58. Artois SUA 2 io sm fm ONS ics vf ics ho ay Shoe Tbe crs ni trees.\n\nR2#show ip sla statistics . |\nIPSLAs Latest Operation StatisticsIPSLA operation id: 1 d 2\nLatest RTT: NoConnection/Busy/TimeoutLatest operation start time: 21:26:46 UTC Tue Feb 21 2023\n\nLatest operation return code: Timeout\nNumber of successes: ©\nNumber of failures: 5 ) ) |\nOperation time to live: Forever & 5\ntri ctor ett 1 rs efor rn on To yf rr on ih fo deo SW hry ere\nSample output:\nSwi#show sampler sample-1\n‘sampler sample-1: $ I\n10: 4290151329 ?\nexport ID: 2 C\nDescription: User defined\nType: random\nRates 1 outRofid’ ~ Shad SE i\nSamples: 3 5\nRequests: 7 ¢\nUsers (1): flow monitor flow-1 (ip,Ete/2,0utput) 3 out of 7\n¥ <8 BE a5 a 0g £2 |\naps & RZ 1\n13\nI Al\nhe IS\nE\n0/0] ett A\n5, TS 168.254.0130 | e0/0. == i\nll SW1™ 05750 FR3 ' 3\nRC re g8N\nsi db |\nPy\nI Is ps I\n(Ts 20 eon !\ni PS 1 =r |\nEY sve f R4 |\n1 Jeon ne eof\nPo oo | Sd\n1-8) TERT i]\n12] shanna] WEE\n18 | 1 8 1\n1B) | 1 oi\nUo Jeo ot 1 Copa] ®01 |\n| gm I I os al 5\n[ R6 1 I'R5 |\nSOR: CL —\nOn we\nJ —\nfirty |\niste sue |\nA ries ests Osim\nRe Sree tee ors Ts 8 1 2 0 350 57430050 3\nfotos\nfry\nFerien\nFa Dian\nfret |\nhota |\n3\nRamtor\nfre\nfoi)\nRAD aoe pores 2111\nRar bo ampere\nprobe\nfoe A 1\nfry |\na 3\nSamos\nSic\nSt emptor to tot\nrh ir le RI\nShr ~\n\n",
     "answerText": "",
     "correctAnswer": null,
-    "optionCount": 4
+    "optionCount": 4,
+    "labCommands": [
+      "! --- Router R1 ---",
+      "ip dhcp pool Branch-1",
+      "network 10.1.2.0 255.255.255.0",
+      "default-router 10.1.2.254",
+      "domain-name cisco.com",
+      "end",
+      "wr",
+      "",
+      "! --- Router R2 ---",
+      "ip sla 1",
+      "ip sla 1 dns R6 name-server 192.168.1.1",
+      "ip sla schedule 1 life forever start-time now",
+      "end",
+      "wr",
+      "",
+      "! --- Router SW1 ---",
+      "interface e0/2",
+      "ip flow monitor flow-1 output",
+      "ip flow monitor flow-1 sampler sample-1 output",
+      "end",
+      "wr",
+      "",
+      "! --- Router R6 ---",
+      "interface e0/0",
+      "shutdown",
+      "no shutdown",
+      "end",
+      "wr"
+    ]
   }
 ]

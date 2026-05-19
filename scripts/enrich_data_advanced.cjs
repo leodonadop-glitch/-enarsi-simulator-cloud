@@ -8,9 +8,11 @@ const data = require('../src/data.json');
 // Load external answers
 const codexAnswersPath = path.join(__dirname, 'codex_answers.json');
 const dragDropAnswersPath = path.join(__dirname, 'drag_drop_answers.json');
+const codexLabsPath = path.join(__dirname, 'codex_labs.json');
 
 let codexAnswers = {};
 let dragDropAnswers = {};
+let codexLabs = {};
 
 if (fs.existsSync(codexAnswersPath)) {
   codexAnswers = require(codexAnswersPath);
@@ -18,6 +20,10 @@ if (fs.existsSync(codexAnswersPath)) {
 
 if (fs.existsSync(dragDropAnswersPath)) {
   dragDropAnswers = require(dragDropAnswersPath);
+}
+
+if (fs.existsSync(codexLabsPath)) {
+  codexLabs = require(codexLabsPath);
 }
 
 // Manually verified answers from AI image analysis
@@ -134,6 +140,10 @@ const enriched = data.map(q => {
   if (dragDropData) {
     result.type = dragDropData.type;
     result.dragDropData = dragDropData;
+  }
+  
+  if (q.isLab && codexLabs[q.id]) {
+    result.labCommands = codexLabs[q.id];
   }
   
   return result;

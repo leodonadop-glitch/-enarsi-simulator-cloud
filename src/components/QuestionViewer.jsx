@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import LabCliSimulator from './LabCliSimulator';
 
 // Extract correct answer letter(s) from answerText
 function extractCorrectAnswer(answerText) {
@@ -267,9 +268,13 @@ function QuestionViewer({ question, showAnswer, onShowAnswer, onMarkResult, curr
         </div>
       )}
 
+      {/* LAB CLI SIMULATOR */}
+      {question.isLab && (
+        <LabCliSimulator question={question} showAnswer={showAnswer} />
+      )}
+
       {/* ANSWER */}
-      {!question.isLab && (
-        <div className="answer-section">
+      <div className="answer-section">
           {!showAnswer ? (
             <div className="answer-btn-container">
               <button className="btn btn-show-answer" onClick={onShowAnswer} id="show-answer-btn">
@@ -351,7 +356,6 @@ function QuestionViewer({ question, showAnswer, onShowAnswer, onMarkResult, curr
             </div>
           )}
         </div>
-      )}
     </div>
     {zoomedImage && (
       <div className="lightbox-overlay" onClick={() => setZoomedImage(null)}>
