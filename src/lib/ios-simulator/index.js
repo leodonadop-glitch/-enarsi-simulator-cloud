@@ -15,7 +15,9 @@ export const MODES = {
   EXT_NACL_CONFIG: 'EXT_NACL_CONFIG',
   KEY_CHAIN_CONFIG: 'KEY_CHAIN_CONFIG',
   KEY_CHAIN_KEY_CONFIG: 'KEY_CHAIN_KEY_CONFIG',
-  TIME_RANGE_CONFIG: 'TIME_RANGE_CONFIG'
+  TIME_RANGE_CONFIG: 'TIME_RANGE_CONFIG',
+  DHCP_POOL_CONFIG: 'DHCP_POOL_CONFIG',
+  IP_SLA_CONFIG: 'IP_SLA_CONFIG'
 };
 
 const MODE_PROMPTS = {
@@ -35,7 +37,9 @@ const MODE_PROMPTS = {
   [MODES.EXT_NACL_CONFIG]: '(config-ext-nacl)#',
   [MODES.KEY_CHAIN_CONFIG]: '(config-keychain)#',
   [MODES.KEY_CHAIN_KEY_CONFIG]: '(config-keychain-key)#',
-  [MODES.TIME_RANGE_CONFIG]: '(config-time-range)#'
+  [MODES.TIME_RANGE_CONFIG]: '(config-time-range)#',
+  [MODES.DHCP_POOL_CONFIG]: '(dhcp-config)#',
+  [MODES.IP_SLA_CONFIG]: '(config-ip-sla)#'
 };
 
 // Basic IOS Simulator Engine
@@ -80,6 +84,11 @@ export class IOSSimulator {
       { mode: MODES.GLOBAL_CONFIG, name: 'ip access-list', handler: (args) => { this.state.mode = MODES.EXT_NACL_CONFIG; return ''; } },
       { mode: MODES.GLOBAL_CONFIG, name: 'key chain', handler: (args) => { this.state.mode = MODES.KEY_CHAIN_CONFIG; return ''; } },
       { mode: MODES.GLOBAL_CONFIG, name: 'time-range', handler: (args) => { this.state.mode = MODES.TIME_RANGE_CONFIG; return ''; } },
+      { mode: MODES.GLOBAL_CONFIG, name: 'ip dhcp pool', handler: (args) => { this.state.mode = MODES.DHCP_POOL_CONFIG; return ''; } },
+      { mode: MODES.GLOBAL_CONFIG, name: 'ip sla', handler: (args) => { 
+        if (args.length > 0 && !isNaN(args[0])) { this.state.mode = MODES.IP_SLA_CONFIG; }
+        return ''; 
+      } },
       { mode: MODES.GLOBAL_CONFIG, name: 'ip', handler: () => { return ''; } },
       { mode: MODES.GLOBAL_CONFIG, name: 'exit', handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } },
       { mode: MODES.GLOBAL_CONFIG, name: 'end', handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } },
@@ -164,7 +173,21 @@ export class IOSSimulator {
       { mode: MODES.TIME_RANGE_CONFIG, name: 'periodic', handler: () => { return ''; } },
       { mode: MODES.TIME_RANGE_CONFIG, name: 'absolute', handler: () => { return ''; } },
       { mode: MODES.TIME_RANGE_CONFIG, name: 'exit', handler: () => { this.state.mode = MODES.GLOBAL_CONFIG; return ''; } },
-      { mode: MODES.TIME_RANGE_CONFIG, name: 'end', handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } }
+      { mode: MODES.TIME_RANGE_CONFIG, name: 'end', handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } },
+
+      // DHCP POOL CONFIG
+      { mode: MODES.DHCP_POOL_CONFIG, name: 'network', handler: () => { return ''; } },
+      { mode: MODES.DHCP_POOL_CONFIG, name: 'default-router', handler: () => { return ''; } },
+      { mode: MODES.DHCP_POOL_CONFIG, name: 'domain-name', handler: () => { return ''; } },
+      { mode: MODES.DHCP_POOL_CONFIG, name: 'no', handler: () => { return ''; } },
+      { mode: MODES.DHCP_POOL_CONFIG, name: 'exit', handler: () => { this.state.mode = MODES.GLOBAL_CONFIG; return ''; } },
+      { mode: MODES.DHCP_POOL_CONFIG, name: 'end', handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } },
+
+      // IP SLA CONFIG
+      { mode: MODES.IP_SLA_CONFIG, name: 'ip', handler: () => { return ''; } },
+      { mode: MODES.IP_SLA_CONFIG, name: 'icmp-echo', handler: () => { return ''; } },
+      { mode: MODES.IP_SLA_CONFIG, name: 'exit', handler: () => { this.state.mode = MODES.GLOBAL_CONFIG; return ''; } },
+      { mode: MODES.IP_SLA_CONFIG, name: 'end', handler: () => { this.state.mode = MODES.PRIV_EXEC; return ''; } }
     ];
   }
 

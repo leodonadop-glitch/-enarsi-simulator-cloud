@@ -60,6 +60,20 @@ function runTests() {
   sim.execute('end');
   console.assert(sim.state.mode === 'PRIV_EXEC', "Test 17 Failed: Cascaded end from key-chain-key failed");
   
+  sim.execute('conf t');
+  
+  sim.execute('ip dhcp pool Branch-1');
+  console.assert(sim.state.mode === 'DHCP_POOL_CONFIG', "Test 18 Failed: DHCP Pool transition failed");
+  
+  sim.execute('exit');
+  console.assert(sim.state.mode === 'GLOBAL_CONFIG', "Test 19 Failed: Exit from DHCP Pool failed");
+  
+  sim.execute('ip sla 1');
+  console.assert(sim.state.mode === 'IP_SLA_CONFIG', "Test 20 Failed: IP SLA transition failed");
+  
+  sim.execute('exit');
+  console.assert(sim.state.mode === 'GLOBAL_CONFIG', "Test 21 Failed: Exit from IP SLA failed");
+  
   console.log("All tests completed!");
 }
 
