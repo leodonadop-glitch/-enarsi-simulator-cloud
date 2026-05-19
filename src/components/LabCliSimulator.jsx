@@ -75,6 +75,23 @@ const DeviceCli = ({ name, expected, showAnswer }) => {
     }
   }, [cliInput]);
 
+  const handleTextareaChange = (e) => {
+    if (showAnswer) return;
+    const newVal = e.target.value;
+    const prompt = simulator.getPrompt();
+    const promptIndex = cliInput.lastIndexOf(prompt);
+    
+    if (promptIndex === -1) {
+      setCliInput(newVal);
+      return;
+    }
+    
+    const readOnlyPrefix = cliInput.slice(0, promptIndex + prompt.length);
+    if (newVal.startsWith(readOnlyPrefix)) {
+      setCliInput(newVal);
+    }
+  };
+
   const validateCommands = () => {
     if (!expected || expected.length === 0) return null;
     
@@ -130,7 +147,7 @@ const DeviceCli = ({ name, expected, showAnswer }) => {
         ref={textareaRef}
         className="cli-textarea"
         value={cliInput}
-        onChange={(e) => setCliInput(e.target.value)}
+        onChange={handleTextareaChange}
         onKeyDown={handleKeyDown}
         readOnly={showAnswer}
         spellCheck="false"
