@@ -8,6 +8,7 @@ import Sidebar from './components/Sidebar';
 import QuestionViewer from './components/QuestionViewer';
 import ResultsDashboard from './components/ResultsDashboard';
 import UserHistory from './components/UserHistory';
+import AdminPanel from './components/AdminPanel';
 
 // Extract correct answer from answerText
 function extractCorrectAnswer(answerText) {
@@ -40,6 +41,21 @@ function App() {
 
   async function loadProfile(userId, userObj) {
     try {
+      // Fetch admin status first
+      let isAdmin = false;
+      try {
+        const { data: adminData, error: adminError } = await supabase
+          .from('admin_users')
+          .select('role')
+          .eq('user_id', userId)
+          .maybeSingle();
+        if (!adminError && adminData) {
+          isAdmin = true;
+        }
+      } catch (adminErr) {
+        console.error('Error verifying admin role:', adminErr);
+      }
+
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -62,11 +78,15 @@ function App() {
         if (insertError) {
           console.error('Error auto-creating missing profile:', insertError);
         } else if (inserted) {
+          inserted.is_admin = isAdmin;
           setProfile(inserted);
           return;
         }
       }
 
+      if (data) {
+        data.is_admin = isAdmin;
+      }
       setProfile(data);
     } catch (err) {
       console.error('Profile load exception:', err);
@@ -367,10 +387,26 @@ function App() {
   }, [results, questions]);
 
   // ========== RENDER ==========
-  if (authLoading) return <div className="loading-screen"><div className="spinner"></div></div>;
-  if (!user) return <AuthScreen />;
+  if (authLoading || (user && !profile)) return <div className="loading-screen"><div className="spinner"></div></div>;
+  if (!user || (profile && !profile.access_code_verified)) {
+    return <AuthScreen user={user} onVerified={() => loadProfile(user.id, user)} />;
+  }
+
+  // Handle admin view routing before session checks so admins can access without active sessions
+  if (currentView === 'admin') {
+    return (
+      <div className="app-container">
+        <main className="main-area" style={{ width: '100%', padding: '20px' }}>
+          <div className="content-scroll">
+            <AdminPanel profile={profile} onBack={() => setCurrentView(session ? 'exam' : 'exam')} />
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   if (!session) return <SessionSetup user={user} profile={profile} onStartSession={handleStartSession}
-    onLogout={handleLogout} onStartReinforcement={handleStartReinforcement} />;
+    onLogout={handleLogout} onStartReinforcement={handleStartReinforcement} onGoToAdmin={() => setCurrentView('admin')} />;
 
   const navList = getNavList();
   const posInList = navList.indexOf(currentIndex);

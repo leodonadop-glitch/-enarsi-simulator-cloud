@@ -56,6 +56,10 @@ function Sidebar({ questions, currentIndex, onSelect, results, stats, session,
             onClick={onEnterReview} disabled={stats.incorrect === 0}>
             🔄 ({stats.incorrect})
           </button>
+          {profile?.is_admin && (
+            <button className={`tab-btn ${currentView === 'admin' ? 'active' : ''}`}
+              onClick={() => { onViewChange('admin'); onExitReview(); }}>🛠️ Admin</button>
+          )}
         </div>
         
         {currentView === 'exam' && (

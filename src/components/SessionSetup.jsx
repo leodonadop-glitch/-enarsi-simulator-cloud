@@ -12,7 +12,7 @@ const PRESETS = [
   { label: 'Labs Only (464-483)', start: 464, end: 483 },
 ];
 
-function SessionSetup({ user, profile, onStartSession, onLogout, onStartReinforcement }) {
+function SessionSetup({ user, profile, onStartSession, onLogout, onStartReinforcement, onGoToAdmin }) {
   const [rangeStart, setRangeStart] = useState(1);
   const [rangeEnd, setRangeEnd] = useState(483);
   const [activeSessions, setActiveSessions] = useState([]);
@@ -226,7 +226,12 @@ function SessionSetup({ user, profile, onStartSession, onLogout, onStartReinforc
         <div className="session-header">
           <h1 className="auth-title">Welcome, {profile?.display_name || 'Student'}!</h1>
           <p className="auth-desc">Set up your study session</p>
-          <button className="btn btn-logout" onClick={onLogout}>🚪 Logout</button>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            {profile?.is_admin && (
+              <button className="btn btn-secondary" onClick={onGoToAdmin}>🛠️ Admin</button>
+            )}
+            <button className="btn btn-logout" onClick={onLogout}>🚪 Logout</button>
+          </div>
         </div>
 
         <div className="session-grid">
@@ -297,7 +302,7 @@ function SessionSetup({ user, profile, onStartSession, onLogout, onStartReinforc
             )}
           </div>
 
-          {/* Companeros en linea Card */}
+          {/* Compañeros en línea Card */}
           <OnlineStatus user={user} />
 
           {/* New Session Card */}
