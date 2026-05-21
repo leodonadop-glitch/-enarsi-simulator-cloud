@@ -292,6 +292,7 @@ function App() {
       if (e.key === 'ArrowLeft' || e.key === 'p') handlePrev();
       if (e.key === 'r' && !showAnswer) handleShowAnswer();
       if (e.key === 'f' || e.key === 'F') setIsFullscreen(prev => !prev);
+      if (e.key === 'Escape') setIsFullscreen(false);
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);

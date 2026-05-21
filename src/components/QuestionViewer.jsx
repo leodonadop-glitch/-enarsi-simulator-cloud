@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import LabCliSimulator from './LabCliSimulator';
 
 // Extract correct answer letter(s) from answerText
@@ -41,6 +41,20 @@ function getOptionLetters(correctAnswer) {
 function QuestionViewer({ question, showAnswer, onShowAnswer, onMarkResult, currentResult, failCount, selectedLetters, onSelectLetter }) {
   const [zoomedImage, setZoomedImage] = useState(null);
   const [selectedLeftBox, setSelectedLeftBox] = useState(null);
+
+  // Close zoom lightbox on Escape key
+  useEffect(() => {
+    if (!zoomedImage) return;
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') {
+        setZoomedImage(null);
+        e.stopPropagation();
+      }
+    };
+    window.addEventListener('keydown', handleEscape, true); // Use capture phase to intercept before it reaches App.jsx
+    return () => window.removeEventListener('keydown', handleEscape, true);
+  }, [zoomedImage]);
+
   const enrichedCorrectAnswer = question?.correctAnswer;
   const answerText = question?.answerText;
   const questionText = question?.questionText;
