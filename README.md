@@ -127,3 +127,9 @@ Este proyecto usa dos roles de agente de IA durante el desarrollo:
 - Exige evidencia concreta — no acepta afirmaciones sin prueba
 
 **Regla operativa:** Forge no despliega a producción sin APPROVE de Atlas.
+
+---
+
+## ✨ Key Features
+*   **Study Streak & Activity Tracker**: Keeps students motivated by tracking their daily study habits. Features local-calendar-date calculations for accuracy across timezones, streak counts, last activity relative times, and warning indicators.
+*   **Online Status / Presence**: Real-time companion presence tracking. The frontend updates the authenticated user's `last_seen_at` timestamp every 60 seconds (heartbeat) and queries the active companions in the background. Shows live status ("Online") and relative offline times (e.g., "Hace 5 min", "Ayer", etc.).

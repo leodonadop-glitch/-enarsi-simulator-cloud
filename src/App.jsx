@@ -38,25 +38,84 @@ function App() {
   const [reinforceCorrectCounts, setReinforceCorrectCounts] = useState({}); // { qId: consecutiveCorrectCount }
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  async function loadProfile(userId) {
-    const { data } = await supabase.from('profiles').select('*').eq('id', userId).single();
-    setProfile(data);
+  async function loadProfile(userId, userObj) {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .maybeSingle();
+
+      if (error) {
+        console.error('Error loading profile:', error);
+      }
+
+      if (!data && userObj) {
+        // Fallback: If profile row is missing (e.g. signed up before trigger), insert it.
+        const defaultName = userObj.user_metadata?.display_name || userObj.email?.split('@')[0] || 'Student';
+        const { data: inserted, error: insertError } = await supabase
+          .from('profiles')
+          .insert({ id: userId, display_name: defaultName })
+          .select()
+          .maybeSingle();
+
+        if (insertError) {
+          console.error('Error auto-creating missing profile:', insertError);
+        } else if (inserted) {
+          setProfile(inserted);
+          return;
+        }
+      }
+
+      setProfile(data);
+    } catch (err) {
+      console.error('Profile load exception:', err);
+    }
   }
 
   // ========== AUTH ==========
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
-      if (session?.user) loadProfile(session.user.id);
+      if (session?.user) loadProfile(session.user.id, session.user);
       setAuthLoading(false);
     });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
-      if (session?.user) loadProfile(session.user.id);
+      if (session?.user) loadProfile(session.user.id, session.user);
       else { setProfile(null); setSession(null); }
     });
     return () => subscription.unsubscribe();
   }, []);
+
+  // ========== PRESENCE HEARTBEAT ==========
+  useEffect(() => {
+    if (!user) return;
+
+    const updatePresence = async () => {
+      try {
+        const { error, status } = await supabase
+          .from('profiles')
+          .update({ last_seen_at: new Date().toISOString() })
+          .eq('id', user.id)
+          .select();
+        
+        if (error) {
+          console.error('Error updating presence:', error.message);
+        } else {
+          console.log(`Presence updated successfully. HTTP Status: ${status}`);
+        }
+      } catch (err) {
+        console.error('Heartbeat error:', err);
+      }
+    };
+
+    // Run immediately
+    updatePresence();
+
+    const interval = setInterval(updatePresence, 60000);
+    return () => clearInterval(interval);
+  }, [user]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();

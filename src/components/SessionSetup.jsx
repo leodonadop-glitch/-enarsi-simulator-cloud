@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
+import OnlineStatus from './OnlineStatus';
 
 const PRESETS = [
   { label: 'All Questions (1-463)', start: 1, end: 463 },
@@ -17,6 +18,15 @@ function SessionSetup({ user, profile, onStartSession, onLogout, onStartReinforc
   const [activeSessions, setActiveSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
+
+  // Activity and Streak state
+  const [activityStats, setActivityStats] = useState({
+    streak: 0,
+    lastActive: null,
+    inactiveDays: null,
+    totalActiveDays: 0,
+    status: 'loading' // 'loading', 'empty', 'error', 'today', 'yesterday', 'inactive-2-3', 'inactive-4'
+  });
 
   const loadSessions = useCallback(async () => {
     const { data: sessions } = await supabase
@@ -68,12 +78,111 @@ function SessionSetup({ user, profile, onStartSession, onLogout, onStartReinforc
     setLoading(false);
   }, [user.id]);
 
+  const loadActivityStats = useCallback(async () => {
+    try {
+      const { data: answers, error: answersError } = await supabase
+        .from('answers')
+        .select('answered_at')
+        .eq('user_id', user.id)
+        .order('answered_at', { ascending: false });
+
+      if (answersError) {
+        setActivityStats({
+          streak: 0,
+          lastActive: null,
+          inactiveDays: null,
+          totalActiveDays: 0,
+          status: 'error'
+        });
+        return;
+      }
+
+      if (!answers || answers.length === 0) {
+        setActivityStats({
+          streak: 0,
+          lastActive: null,
+          inactiveDays: null,
+          totalActiveDays: 0,
+          status: 'empty'
+        });
+        return;
+      }
+
+      // Convert timestamps to unique local date strings (YYYY-MM-DD)
+      const uniqueDateStrings = Array.from(new Set(
+        answers.map(a => new Date(a.answered_at).toLocaleDateString('en-CA'))
+      )).sort((a, b) => b.localeCompare(a)); // Sort descending (most recent first)
+
+      const totalActiveDays = uniqueDateStrings.length;
+      const lastActiveStr = uniqueDateStrings[0];
+      
+      // Parse local dates to compute difference correctly
+      // Format en-CA yields YYYY-MM-DD which is safe to parse in timezone-independent way
+      const parseDate = (dStr) => {
+        const parts = dStr.split('-');
+        return new Date(parts[0], parts[1] - 1, parts[2]);
+      };
+
+      const lastActiveDate = parseDate(lastActiveStr);
+
+      const today = new Date();
+      const todayStr = today.toLocaleDateString('en-CA');
+      const todayDate = parseDate(todayStr);
+
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayStr = yesterday.toLocaleDateString('en-CA');
+
+      // Calculate difference in days calendar-wise
+      const timeDiff = todayDate.getTime() - lastActiveDate.getTime();
+      const inactiveDays = Math.max(0, Math.round(timeDiff / (1000 * 60 * 60 * 24)));
+
+      // Calculate streak
+      let streak = 0;
+      if (lastActiveStr === todayStr || lastActiveStr === yesterdayStr) {
+        let currentCheckDate = parseDate(lastActiveStr);
+        while (true) {
+          const checkStr = currentCheckDate.toLocaleDateString('en-CA');
+          if (uniqueDateStrings.includes(checkStr)) {
+            streak++;
+            currentCheckDate.setDate(currentCheckDate.getDate() - 1);
+          } else {
+            break;
+          }
+        }
+      }
+
+      let status = 'empty';
+      if (inactiveDays === 0) {
+        status = 'today';
+      } else if (inactiveDays === 1) {
+        status = 'yesterday';
+      } else if (inactiveDays >= 2 && inactiveDays <= 3) {
+        status = 'inactive-2-3';
+      } else if (inactiveDays >= 4) {
+        status = 'inactive-4';
+      }
+
+      setActivityStats({
+        streak,
+        lastActive: lastActiveDate,
+        inactiveDays,
+        totalActiveDays,
+        status
+      });
+    } catch (err) {
+      console.error('Error loading activity stats:', err);
+      setActivityStats(prev => ({ ...prev, status: 'error' }));
+    }
+  }, [user.id]);
+
   useEffect(() => {
     const timer = setTimeout(() => {
       loadSessions();
+      loadActivityStats();
     }, 0);
     return () => clearTimeout(timer);
-  }, [loadSessions]);
+  }, [loadSessions, loadActivityStats]);
 
   const handleCreateSession = async () => {
     setCreating(true);
@@ -121,6 +230,76 @@ function SessionSetup({ user, profile, onStartSession, onLogout, onStartReinforc
         </div>
 
         <div className="session-grid">
+          {/* Actividad y Racha Card */}
+          <div className="session-card glass-panel activity-card">
+            <h2 className="session-card-title">🔥 Racha y Actividad</h2>
+            {activityStats.status === 'loading' ? (
+              <p className="text-muted">Cargando estadisticas...</p>
+            ) : activityStats.status === 'error' ? (
+              <p className="text-muted" style={{ color: 'var(--danger)' }}>Error al cargar datos de actividad</p>
+            ) : (
+              <div className="activity-container">
+                <div className="streak-main">
+                  <div className="streak-badge-large">
+                    <span className="streak-icon">🔥</span>
+                    <span className="streak-number">{activityStats.streak}</span>
+                    <span className="streak-label">
+                      {activityStats.streak === 1 ? 'Dia de racha' : 'Dias de racha'}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="activity-stats-details">
+                  <div className="activity-detail-item">
+                    <span className="detail-label">Ultima actividad</span>
+                    <span className="detail-value">
+                      {activityStats.status === 'empty' 
+                        ? 'Sin actividad' 
+                        : activityStats.inactiveDays === 0 
+                          ? 'Hoy' 
+                          : activityStats.inactiveDays === 1 
+                            ? 'Ayer' 
+                            : `${activityStats.inactiveDays} dias atras`}
+                    </span>
+                  </div>
+                  <div className="activity-detail-item">
+                    <span className="detail-label">Total dias de estudio</span>
+                    <span className="detail-value">{activityStats.totalActiveDays} dias</span>
+                  </div>
+                </div>
+
+                {activityStats.status === 'today' && (
+                  <div className="activity-status-msg active-today">
+                    Racha activa. Sigue estudiando para mantenerla.
+                  </div>
+                )}
+                {activityStats.status === 'yesterday' && (
+                  <div className="activity-status-msg active-yesterday">
+                    Estudiaste ayer. Haz tu sesion de hoy para no perder tu racha.
+                  </div>
+                )}
+                {activityStats.status === 'inactive-2-3' && (
+                  <div className="activity-status-msg inactive-warning">
+                    Llevas {activityStats.inactiveDays} dias inactivo. Estudia hoy para reactivar tu racha.
+                  </div>
+                )}
+                {activityStats.status === 'inactive-4' && (
+                  <div className="activity-status-msg inactive-critical">
+                    Llevas {activityStats.inactiveDays} dias inactivo. Retoma tu estudio hoy.
+                  </div>
+                )}
+                {activityStats.status === 'empty' && (
+                  <div className="activity-status-msg no-activity">
+                    Comienza tu primera sesion de estudio para iniciar tu racha.
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Companeros en linea Card */}
+          <OnlineStatus user={user} />
+
           {/* New Session Card */}
           <div className="session-card glass-panel">
             <h2 className="session-card-title">📝 New Session</h2>

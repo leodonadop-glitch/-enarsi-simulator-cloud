@@ -8,13 +8,14 @@
 CREATE TABLE IF NOT EXISTS profiles (
   id UUID REFERENCES auth.users ON DELETE CASCADE PRIMARY KEY,
   display_name TEXT NOT NULL,
-  created_at TIMESTAMPTZ DEFAULT now()
+  created_at TIMESTAMPTZ DEFAULT now(),
+  last_seen_at TIMESTAMPTZ DEFAULT now() -- Used for tracking online status / last connection
 );
 
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Users can view own profile"
-  ON profiles FOR SELECT USING (auth.uid() = id);
+CREATE POLICY "Profiles are viewable by authenticated users"
+  ON profiles FOR SELECT TO authenticated USING (true);
 
 CREATE POLICY "Users can update own profile"
   ON profiles FOR UPDATE USING (auth.uid() = id);

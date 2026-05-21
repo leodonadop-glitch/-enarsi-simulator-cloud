@@ -861,6 +861,7 @@ body {
 .form-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
 .form-input::placeholder { color: rgba(148,163,184,0.5); }
 .auth-error { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2); color: var(--danger); padding: 10px 14px; border-radius: var(--radius-sm); font-size: 0.82rem; }
+.auth-success { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); color: var(--success); padding: 10px 14px; border-radius: var(--radius-sm); font-size: 0.82rem; line-height: 1.4; text-align: center; }
 .btn-auth { padding: 14px; font-size: 1rem; background: linear-gradient(135deg, var(--accent), #7c3aed); color: white; border-radius: 12px; font-weight: 600; box-shadow: 0 4px 20px rgba(59,130,246,0.3); margin-top: 8px; justify-content: center; }
 .btn-auth:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(59,130,246,0.4); }
 .btn-auth:disabled { opacity: 0.6; transform: none; }
@@ -1056,4 +1057,216 @@ body {
 .dnd-target.incorrect { border-color: var(--danger); border-style: solid; }
 .dnd-target.incorrect .dnd-target-content { background: var(--danger); box-shadow: 0 2px 8px var(--danger-glow); }
 .dnd-target.missed { border-color: var(--lab-color); border-style: dashed; }
+
+/* ====================== ACTIVITY & STREAK CARD ====================== */
+.activity-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.activity-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+  justify-content: space-between;
+}
+
+.streak-main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.streak-badge-large {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  width: 130px;
+  height: 130px;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  transition: var(--transition);
+}
+
+.streak-badge-large:hover {
+  border-color: rgba(245, 158, 11, 0.4);
+  box-shadow: 0 8px 30px rgba(245, 158, 11, 0.15);
+  transform: translateY(-2px);
+}
+
+.streak-icon {
+  font-size: 2rem;
+  line-height: 1;
+  margin-bottom: 4px;
+  animation: pulseFlame 2s infinite ease-in-out;
+}
+
+@keyframes pulseFlame {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(245,158,11,0.5)); }
+  50% { transform: scale(1.1); filter: drop-shadow(0 0 10px rgba(245,158,11,0.8)); }
+}
+
+.streak-number {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--lab-color);
+  line-height: 1;
+  text-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+}
+
+.streak-label {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  margin-top: 4px;
+}
+
+.activity-stats-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.activity-detail-item {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.activity-detail-item .detail-label {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.activity-detail-item .detail-value {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.activity-status-msg {
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 500;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.activity-status-msg.active-today {
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  color: var(--success);
+}
+
+.activity-status-msg.active-yesterday {
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  color: var(--accent);
+}
+
+.activity-status-msg.inactive-warning {
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  color: var(--lab-color);
+}
+
+.activity-status-msg.inactive-critical {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: var(--danger);
+}
+
+.activity-status-msg.no-activity {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+}
+
+/* ====================== ONLINE STATUS / COMPANIONS ====================== */
+.online-users-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.online-users-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 240px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.companion-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+
+.companion-item-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-dot.online {
+  background: var(--success);
+  box-shadow: 0 0 8px var(--success-glow);
+  animation: pulseOnline 2s infinite ease-in-out;
+}
+
+.status-dot.offline {
+  background: #475569;
+}
+
+.companion-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.companion-time {
+  font-size: 0.72rem;
+}
+
+.companion-time.online-text {
+  color: var(--success);
+  font-weight: 600;
+  text-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+}
+
+.companion-time.offline-text {
+  color: var(--text-muted);
+}
+
+@keyframes pulseOnline {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.7; }
+}
 

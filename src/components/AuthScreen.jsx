@@ -8,11 +8,13 @@ function AuthScreen() {
   const [displayName, setDisplayName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setSuccessMessage('');
 
     try {
       if (isLogin) {
@@ -26,6 +28,11 @@ function AuthScreen() {
           options: { data: { display_name: displayName.trim() } }
         });
         if (error) throw error;
+        
+        setSuccessMessage('¡Registro exitoso! Por favor, revisa tu correo electrónico para confirmar y activar tu cuenta antes de iniciar sesión.');
+        // Clear fields on successful registration
+        setDisplayName('');
+        setPassword('');
       }
     } catch (err) {
       setError(err.message);
@@ -45,10 +52,10 @@ function AuthScreen() {
         </div>
 
         <div className="auth-tabs">
-          <button className={`auth-tab ${isLogin ? 'active' : ''}`} onClick={() => { setIsLogin(true); setError(''); }}>
+          <button className={`auth-tab ${isLogin ? 'active' : ''}`} onClick={() => { setIsLogin(true); setError(''); setSuccessMessage(''); }}>
             Sign In
           </button>
-          <button className={`auth-tab ${!isLogin ? 'active' : ''}`} onClick={() => { setIsLogin(false); setError(''); }}>
+          <button className={`auth-tab ${!isLogin ? 'active' : ''}`} onClick={() => { setIsLogin(false); setError(''); setSuccessMessage(''); }}>
             Sign Up
           </button>
         </div>
@@ -94,6 +101,7 @@ function AuthScreen() {
           </div>
 
           {error && <div className="auth-error">{error}</div>}
+          {successMessage && <div className="auth-success">{successMessage}</div>}
 
           <button type="submit" className="btn btn-auth" disabled={loading}>
             {loading ? '⏳ Loading...' : isLogin ? '🚀 Sign In' : '✨ Create Account'}
