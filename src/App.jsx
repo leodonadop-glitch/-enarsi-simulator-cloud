@@ -36,6 +36,7 @@ function App() {
   const [selectedLetters, setSelectedLetters] = useState({}); // { qId: ['A'] }
   const [reinforceMode, setReinforceMode] = useState(false);
   const [reinforceCorrectCounts, setReinforceCorrectCounts] = useState({}); // { qId: consecutiveCorrectCount }
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   async function loadProfile(userId) {
     const { data } = await supabase.from('profiles').select('*').eq('id', userId).single();
@@ -283,10 +284,14 @@ function App() {
 
   useEffect(() => {
     const handler = (e) => {
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      const tag = e.target.tagName;
+      const isEditable = tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable;
+      const hasModifier = e.ctrlKey || e.metaKey || e.altKey;
+      if (isEditable || hasModifier) return;
       if (e.key === 'ArrowRight' || e.key === 'n') handleNext();
       if (e.key === 'ArrowLeft' || e.key === 'p') handlePrev();
       if (e.key === 'r' && !showAnswer) handleShowAnswer();
+      if (e.key === 'f' || e.key === 'F') setIsFullscreen(prev => !prev);
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
@@ -311,8 +316,19 @@ function App() {
   const posInList = navList.indexOf(currentIndex);
 
   return (
-    <div className="app-container">
-      <button className="mobile-menu-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>☰</button>
+    <div className={`app-container${isFullscreen ? ' fullscreen-mode' : ''}`}>
+      {!isFullscreen && (
+        <button className="mobile-menu-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>☰</button>
+      )}
+
+      {/* Floating exit button for fullscreen — cloud keeps bottom-nav so only exit needed */}
+      {isFullscreen && (
+        <button
+          className="fullscreen-exit-btn-fixed"
+          onClick={() => setIsFullscreen(false)}
+          title="Exit fullscreen (F)"
+        >⛶ Exit</button>
+      )}
 
       <Sidebar questions={questions} currentIndex={currentIndex} onSelect={jumpToQuestion}
         results={results} stats={stats} session={session}
@@ -353,6 +369,12 @@ function App() {
                   <button className="btn btn-secondary" onClick={handlePrev} disabled={posInList <= 0}>←</button>
                   <button className="btn btn-primary" onClick={handleNext} disabled={posInList >= navList.length - 1}>→</button>
                 </div>
+                <button
+                  className="btn btn-secondary btn-sm"
+                  onClick={() => setIsFullscreen(prev => !prev)}
+                  title="Toggle fullscreen (F)"
+                  id="fullscreen-btn"
+                >⛶</button>
                 <button className="btn btn-end-test" onClick={handleEndTest}>🏁 End</button>
               </div>
             </header>

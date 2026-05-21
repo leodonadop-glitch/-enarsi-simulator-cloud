@@ -787,6 +787,55 @@ body {
 ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.12); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
 
+/* ====================== FULLSCREEN MODE ====================== */
+.app-container.fullscreen-mode {
+  grid-template-columns: 1fr;
+}
+
+.app-container.fullscreen-mode .sidebar {
+  display: none;
+}
+
+.app-container.fullscreen-mode .top-bar {
+  display: none;
+}
+
+.app-container.fullscreen-mode .mobile-menu-btn {
+  display: none;
+}
+
+/* Expand question card width in fullscreen */
+.app-container.fullscreen-mode .question-card {
+  max-width: 1200px;
+}
+
+/* Cloud fullscreen: floating exit button (top-right corner) */
+/* bottom-nav is preserved so no floating nav needed */
+.fullscreen-exit-btn-fixed {
+  position: fixed;
+  top: 12px;
+  right: 16px;
+  z-index: 9999;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(12px);
+  color: var(--danger);
+  font-size: 0.78rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.fullscreen-exit-btn-fixed:hover {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: var(--danger);
+}
+
+
 /* ====================== LOADING ====================== */
 .loading-screen { display: flex; align-items: center; justify-content: center; height: 100vh; }
 .spinner { width: 40px; height: 40px; border: 3px solid var(--glass-border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
