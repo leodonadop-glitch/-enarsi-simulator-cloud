@@ -439,8 +439,8 @@ function AppContent() {
 
   // ========== RENDER ==========
   if (authLoading || (user && !profile)) return <div className="loading-screen"><div className="spinner"></div></div>;
-  if (!user || (profile && !profile.access_code_verified)) {
-    return <AuthScreen user={user} onVerified={() => loadProfile(user.id, user)} />;
+  if (!user) {
+    return <AuthScreen />;
   }
 
   // Navigation wrappers

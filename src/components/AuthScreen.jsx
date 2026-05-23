@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { supabase } from '../lib/supabase';
 
-function AuthScreen({ user, onVerified }) {
+function AuthScreen() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -9,66 +9,6 @@ function AuthScreen({ user, onVerified }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  const [codeEntered, setCodeEntered] = useState('');
-
-  const handleVerifyCode = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    setSuccessMessage('');
-
-    const targetCode = "FreeEnarsi.*Team";
-    const userEmail = user?.email || '';
-
-    if (codeEntered !== targetCode) {
-      try {
-        await supabase.from('access_logs').insert({
-          email: userEmail,
-          action: 'code_failed',
-          success: false,
-          reason: 'incorrect_code',
-          user_id: user?.id
-        });
-      } catch (logErr) {
-        console.error('Error logging code failure:', logErr);
-      }
-      setError("Código incorrecto. Intenta de nuevo.");
-      setCodeEntered('');
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({ access_code_verified: true })
-        .eq('id', user.id);
-
-      if (error) throw error;
-
-      try {
-        await supabase.from('access_logs').insert({
-          email: userEmail,
-          action: 'code_verified',
-          success: true,
-          user_id: user.id
-        });
-      } catch (logErr) {
-        console.error('Error logging code success:', logErr);
-      }
-
-      setSuccessMessage("¡Acceso verificado!");
-      if (onVerified) {
-        setTimeout(() => {
-          onVerified();
-        }, 1000);
-      }
-    } catch (err) {
-      setError(err.message || "Error al actualizar perfil en la base de datos.");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -188,52 +128,6 @@ function AuthScreen({ user, onVerified }) {
       setLoading(false);
     }
   };
-
-  if (user) {
-    return (
-      <div className="auth-page">
-        <div className="auth-bg-glow"></div>
-        <div className="auth-card glass-panel">
-          <div className="auth-header">
-            <h1 className="auth-title">ENARSI</h1>
-            <p className="auth-subtitle">Verificación Requerida</p>
-            <p className="auth-desc">Ingresa el código de acceso proporcionado para continuar.</p>
-          </div>
-
-          <form onSubmit={handleVerifyCode} className="auth-form">
-            <div className="form-group">
-              <label className="form-label">Código de Acceso / Access Code</label>
-              <input
-                type="text"
-                className="form-input"
-                placeholder="Ingresa el código de acceso"
-                value={codeEntered}
-                onChange={(e) => setCodeEntered(e.target.value)}
-                required
-              />
-            </div>
-
-            {error && <div className="auth-error">{error}</div>}
-            {successMessage && <div className="auth-success">{successMessage}</div>}
-
-            <button type="submit" className="btn btn-auth" disabled={loading}>
-              {loading ? '⏳ Verificando...' : '🔑 Verificar Código'}
-            </button>
-          </form>
-
-          <div style={{ marginTop: '20px', textAlign: 'center' }}>
-            <button 
-              onClick={() => supabase.auth.signOut()} 
-              className="btn btn-secondary btn-sm"
-              style={{ width: '100%', padding: '10px' }}
-            >
-              🚪 Cerrar Sesión / Sign Out
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="auth-page">
