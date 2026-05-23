@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import './index.css';
 import allQuestions from './data.json';
 import { supabase } from './lib/supabase';
@@ -10,6 +11,14 @@ import ResultsDashboard from './components/ResultsDashboard';
 import UserHistory from './components/UserHistory';
 import AdminPanel from './components/AdminPanel';
 
+// Protected route for admin-only access
+function ProtectedRoute({ profile, element }) {
+  if (!profile?.is_admin) {
+    return <Navigate to="/" replace />;
+  }
+  return element;
+}
+
 // Extract correct answer from answerText
 function extractCorrectAnswer(answerText) {
   if (!answerText) return [];
@@ -18,7 +27,9 @@ function extractCorrectAnswer(answerText) {
   return match[1].replace(/[\s,]/g, '').split('').filter(c => /[A-E]/i.test(c)).map(c => c.toUpperCase());
 }
 
-function App() {
+function AppContent() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
@@ -208,7 +219,7 @@ function App() {
     setReinforceMode(false); setSelectedLetters({});
   };
 
-  const handleEndTest = () => setCurrentView('results');
+  const handleEndTest = () => { setCurrentView('results'); };
   const handleBackToDashboard = () => { handleEndSession(); };
 
   // ========== EXAM LOGIC ==========
@@ -392,22 +403,67 @@ function App() {
     return <AuthScreen user={user} onVerified={() => loadProfile(user.id, user)} />;
   }
 
-  // Handle admin view routing before session checks so admins can access without active sessions
-  if (currentView === 'admin') {
+  // Navigation wrappers
+  const startSessionWrapper = async (sess) => {
+    await handleStartSession(sess);
+    navigate('/exam');
+  };
+
+  const reinforcementWrapper = async () => {
+    await handleStartReinforcement();
+    navigate('/exam');
+  };
+
+  const endTestWrapper = () => {
+    handleEndTest();
+    navigate('/results');
+  };
+
+  const reviewIncorrectWrapper = () => {
+    enterReviewMode();
+    navigate('/exam');
+  };
+
+  const jumpQuestionWrapper = (idx) => {
+    jumpToQuestion(idx);
+    navigate('/exam');
+  };
+
+  const backDashboardWrapper = () => {
+    handleBackToDashboard();
+    navigate('/');
+  };
+
+  // Derive currentView from URL pathname
+  let pathCurrentView = 'exam'; // default
+  if (location.pathname === '/') pathCurrentView = 'home';
+  else if (location.pathname === '/exam') pathCurrentView = 'exam';
+  else if (location.pathname === '/results') pathCurrentView = 'results';
+  else if (location.pathname === '/history') pathCurrentView = 'history';
+  else if (location.pathname === '/admin') pathCurrentView = 'admin';
+
+  // Admin view
+  if (pathCurrentView === 'admin') {
     return (
-      <div className="app-container">
-        <main className="main-area" style={{ width: '100%', padding: '20px' }}>
-          <div className="content-scroll">
-            <AdminPanel profile={profile} onBack={() => setCurrentView(session ? 'exam' : 'exam')} />
-          </div>
-        </main>
-      </div>
+      <ProtectedRoute profile={profile} element={
+        <div className="app-container admin-app-shell">
+          <main className="main-area admin-main-area">
+            <div className="content-scroll admin-content-scroll">
+              <AdminPanel profile={profile} onBack={() => navigate(session ? '/exam' : '/')} />
+            </div>
+          </main>
+        </div>
+      } />
     );
   }
 
-  if (!session) return <SessionSetup user={user} profile={profile} onStartSession={handleStartSession}
-    onLogout={handleLogout} onStartReinforcement={handleStartReinforcement} onGoToAdmin={() => setCurrentView('admin')} />;
+  // Home view (no session)
+  if (pathCurrentView === 'home' || !session) {
+    return <SessionSetup user={user} profile={profile} onStartSession={startSessionWrapper}
+      onLogout={handleLogout} onStartReinforcement={reinforcementWrapper} onGoToAdmin={() => navigate('/admin')} />;
+  }
 
+  // Exam view with session
   const navList = getNavList();
   const posInList = navList.indexOf(currentIndex);
 
@@ -417,7 +473,6 @@ function App() {
         <button className="mobile-menu-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>☰</button>
       )}
 
-      {/* Floating exit button for fullscreen — cloud keeps bottom-nav so only exit needed */}
       {isFullscreen && (
         <button
           className="fullscreen-exit-btn-fixed"
@@ -426,92 +481,107 @@ function App() {
         >⛶ Exit</button>
       )}
 
-      <Sidebar questions={questions} currentIndex={currentIndex} onSelect={jumpToQuestion}
+      <Sidebar questions={questions} currentIndex={currentIndex} onSelect={jumpQuestionWrapper}
         results={results} stats={stats} session={session}
-        currentView={currentView} onViewChange={setCurrentView}
-        reviewMode={reviewMode} onEnterReview={enterReviewMode} onExitReview={exitReviewMode}
-        profile={profile} onLogout={handleLogout} onEndSession={handleEndSession}
-        filteredIndices={filteredIndices} onEndTest={handleEndTest}
+        currentView={pathCurrentView}
+        reviewMode={reviewMode} onEnterReview={reviewIncorrectWrapper} onExitReview={exitReviewMode}
+        profile={profile} onLogout={handleLogout} onEndSession={backDashboardWrapper}
+        filteredIndices={filteredIndices} onEndTest={endTestWrapper}
         reinforceMode={reinforceMode} reinforceCorrectCounts={reinforceCorrectCounts}
         sidebarOpen={sidebarOpen}
       />
 
       <main className="main-area">
-        {currentView === 'exam' ? (
-          <>
-            <header className="top-bar">
-              <div className="top-bar-left">
-                <h2 className="question-title">
-                  {reviewMode && <span className="review-badge">🔄 REVIEW</span>}
-                  {reinforceMode && <span className="reinforce-badge">🔥 REINFORCE</span>}
-                  {currentQuestion?.isLab ? `🧪 Lab ${currentQuestion.id}` : `📝 Q${currentQuestion?.id}`}
-                  {results[currentQuestion?.id] === 'correct' && <span className="result-badge correct">✓</span>}
-                  {results[currentQuestion?.id] === 'incorrect' && <span className="result-badge incorrect">✗</span>}
-                </h2>
-                <span className="progress-text">{stats.answered}/{stats.total}</span>
-              </div>
-              <div className="top-bar-right">
-                <div className="search-wrapper">
-                  <input type="text" className="search-input" placeholder="Search..." value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)} id="search-input" />
-                  {searchQuery && <span className="search-count">{filteredIndices?.length ?? stats.total}</span>}
+        <Routes>
+          <Route path="/exam" element={
+            <>
+              <header className="top-bar">
+                <div className="top-bar-left">
+                  <h2 className="question-title">
+                    {reviewMode && <span className="review-badge">🔄 REVIEW</span>}
+                    {reinforceMode && <span className="reinforce-badge">🔥 REINFORCE</span>}
+                    {currentQuestion?.isLab ? `🧪 Lab ${currentQuestion.id}` : `📝 Q${currentQuestion?.id}`}
+                    {results[currentQuestion?.id] === 'correct' && <span className="result-badge correct">✓</span>}
+                    {results[currentQuestion?.id] === 'incorrect' && <span className="result-badge incorrect">✗</span>}
+                  </h2>
+                  <span className="progress-text">{stats.answered}/{stats.total}</span>
                 </div>
-                <form onSubmit={handleJumpSubmit} className="jump-form">
-                  <input type="number" className="jump-input" placeholder="#" min={1} max={483}
-                    value={jumpValue} onChange={(e) => setJumpValue(e.target.value)} id="jump-input" />
-                  <button type="submit" className="btn btn-secondary btn-sm">Go</button>
-                </form>
-                <div className="nav-controls">
-                  <button className="btn btn-secondary" onClick={handlePrev} disabled={posInList <= 0}>←</button>
-                  <button className="btn btn-primary" onClick={handleNext} disabled={posInList >= navList.length - 1}>→</button>
+                <div className="top-bar-right">
+                  <div className="search-wrapper">
+                    <input type="text" className="search-input" placeholder="Search..." value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)} id="search-input" />
+                    {searchQuery && <span className="search-count">{filteredIndices?.length ?? stats.total}</span>}
+                  </div>
+                  <form onSubmit={handleJumpSubmit} className="jump-form">
+                    <input type="number" className="jump-input" placeholder="#" min={1} max={483}
+                      value={jumpValue} onChange={(e) => setJumpValue(e.target.value)} id="jump-input" />
+                    <button type="submit" className="btn btn-secondary btn-sm">Go</button>
+                  </form>
+                  <div className="nav-controls">
+                    <button className="btn btn-secondary" onClick={handlePrev} disabled={posInList <= 0}>←</button>
+                    <button className="btn btn-primary" onClick={handleNext} disabled={posInList >= navList.length - 1}>→</button>
+                  </div>
+                  <button
+                    className="btn btn-secondary btn-sm"
+                    onClick={() => setIsFullscreen(prev => !prev)}
+                    title="Toggle fullscreen (F)"
+                    id="fullscreen-btn"
+                  >⛶</button>
+                  <button className="btn btn-end-test" onClick={endTestWrapper}>🏁 End</button>
                 </div>
-                <button
-                  className="btn btn-secondary btn-sm"
-                  onClick={() => setIsFullscreen(prev => !prev)}
-                  title="Toggle fullscreen (F)"
-                  id="fullscreen-btn"
-                >⛶</button>
-                <button className="btn btn-end-test" onClick={handleEndTest}>🏁 End</button>
+              </header>
+              <div className="content-scroll">
+                {currentQuestion && (
+                  <QuestionViewer
+                    question={currentQuestion} showAnswer={showAnswer}
+                    onShowAnswer={handleShowAnswer} onMarkResult={handleMarkResult}
+                    currentResult={results[currentQuestion.id]}
+                    failCount={failCounts[currentQuestion.id] || 0}
+                    selectedLetters={selectedLetters[currentQuestion.id] || []}
+                    onSelectLetter={(letters) => handleSelectLetter(currentQuestion.id, letters)}
+                  />
+                )}
               </div>
-            </header>
+              <footer className="bottom-nav">
+                <button className="btn btn-secondary" onClick={handlePrev} disabled={posInList <= 0}>← Prev</button>
+                <span className="bottom-nav-info">
+                  {reinforceMode && `🔥 ${questions.length} left`}
+                  {!reinforceMode && `${currentIndex + 1} / ${questions.length}`}
+                </span>
+                <button className="btn btn-primary" onClick={handleNext} disabled={posInList >= navList.length - 1}>Next →</button>
+              </footer>
+            </>
+          } />
+
+          <Route path="/results" element={
             <div className="content-scroll">
-              {currentQuestion && (
-                <QuestionViewer
-                  question={currentQuestion} showAnswer={showAnswer}
-                  onShowAnswer={handleShowAnswer} onMarkResult={handleMarkResult}
-                  currentResult={results[currentQuestion.id]}
-                  failCount={failCounts[currentQuestion.id] || 0}
-                  selectedLetters={selectedLetters[currentQuestion.id] || []}
-                  onSelectLetter={(letters) => handleSelectLetter(currentQuestion.id, letters)}
-                />
-              )}
+              <ResultsDashboard questions={questions} results={results} stats={stats}
+                onReviewIncorrect={reviewIncorrectWrapper} onJumpTo={jumpQuestionWrapper}
+                onBackToDashboard={backDashboardWrapper} />
             </div>
-            {/* Bottom Nav Bar */}
-            <footer className="bottom-nav">
-              <button className="btn btn-secondary" onClick={handlePrev} disabled={posInList <= 0}>← Prev</button>
-              <span className="bottom-nav-info">
-                {reinforceMode && `🔥 ${questions.length} left`}
-                {!reinforceMode && `${currentIndex + 1} / ${questions.length}`}
-              </span>
-              <button className="btn btn-primary" onClick={handleNext} disabled={posInList >= navList.length - 1}>Next →</button>
-            </footer>
-          </>
-        ) : currentView === 'results' ? (
-          <div className="content-scroll">
-            <ResultsDashboard questions={questions} results={results} stats={stats}
-              onReviewIncorrect={enterReviewMode} onJumpTo={jumpToQuestion}
-              onBackToDashboard={handleBackToDashboard} />
-          </div>
-        ) : currentView === 'history' ? (
-          <div className="content-scroll">
-            <UserHistory user={user} questions={allQuestions} onJumpTo={(idx) => {
-              const q = allQuestions[idx];
-              if (q) { const localIdx = questions.findIndex(qq => qq.id === q.id); if (localIdx >= 0) jumpToQuestion(localIdx); }
-            }} />
-          </div>
-        ) : null}
+          } />
+
+          <Route path="/history" element={
+            <div className="content-scroll">
+              <UserHistory user={user} questions={allQuestions} onJumpTo={(idx) => {
+                const q = allQuestions[idx];
+                if (q) { const localIdx = questions.findIndex(qq => qq.id === q.id); if (localIdx >= 0) jumpQuestionWrapper(localIdx); }
+              }} />
+            </div>
+          } />
+
+          <Route path="*" element={<Navigate to="/exam" replace />} />
+        </Routes>
       </main>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
   );
 }
 

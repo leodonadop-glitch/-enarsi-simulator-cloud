@@ -1,6 +1,9 @@
+import { useNavigate } from 'react-router-dom';
+
 function Sidebar({ questions, currentIndex, onSelect, results, stats, session,
-  currentView, onViewChange, reviewMode, onEnterReview, onExitReview,
+  currentView, reviewMode, onEnterReview, onExitReview,
   profile, onLogout, onEndSession, filteredIndices, onEndTest, reinforceMode, reinforceCorrectCounts }) {
+  const navigate = useNavigate();
   const scoreColor = stats.percentage >= 80 ? 'var(--success)' : stats.percentage >= 50 ? 'var(--lab-color)' : 'var(--danger)';
 
   return (
@@ -47,18 +50,18 @@ function Sidebar({ questions, currentIndex, onSelect, results, stats, session,
 
         <div className="sidebar-tabs">
           <button className={`tab-btn ${currentView === 'exam' && !reviewMode && !reinforceMode ? 'active' : ''}`}
-            onClick={() => { onViewChange('exam'); onExitReview(); }}>📝 Exam</button>
+            onClick={() => { navigate('/exam'); onExitReview(); }}>📝 Exam</button>
           <button className={`tab-btn ${currentView === 'results' ? 'active' : ''}`}
-            onClick={() => onViewChange('results')}>📊 Results</button>
+            onClick={() => navigate('/results')}>📊 Results</button>
           <button className={`tab-btn ${currentView === 'history' ? 'active' : ''}`}
-            onClick={() => onViewChange('history')}>📈 History</button>
+            onClick={() => navigate('/history')}>📈 History</button>
           <button className={`tab-btn review-tab ${reviewMode ? 'active' : ''}`}
             onClick={onEnterReview} disabled={stats.incorrect === 0}>
             🔄 ({stats.incorrect})
           </button>
           {profile?.is_admin && (
             <button className={`tab-btn ${currentView === 'admin' ? 'active' : ''}`}
-              onClick={() => { onViewChange('admin'); onExitReview(); }}>🛠️ Admin</button>
+              onClick={() => { navigate('/admin'); onExitReview(); }}>🛠️ Admin</button>
           )}
         </div>
         
