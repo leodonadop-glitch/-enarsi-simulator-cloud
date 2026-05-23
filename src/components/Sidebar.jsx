@@ -13,6 +13,9 @@ function Sidebar({ questions, currentIndex, onSelect, results, stats, session,
           <h1>ENARSI Simulator</h1>
           <div className="user-info">
             <span className="user-name">👤 {profile?.display_name}</span>
+            {profile?.is_admin && (
+              <button className="btn-link" onClick={() => { navigate('/admin'); onExitReview(); }}>Admin</button>
+            )}
             <button className="btn-link" onClick={onLogout}>Logout</button>
           </div>
         </div>
@@ -50,19 +53,15 @@ function Sidebar({ questions, currentIndex, onSelect, results, stats, session,
 
         <div className="sidebar-tabs">
           <button className={`tab-btn ${currentView === 'exam' && !reviewMode && !reinforceMode ? 'active' : ''}`}
-            onClick={() => { navigate('/exam'); onExitReview(); }}>📝 Exam</button>
+            onClick={() => { navigate(session?.id ? `/session/${session.id}` : '/exam'); onExitReview(); }}>📝 Exam</button>
           <button className={`tab-btn ${currentView === 'results' ? 'active' : ''}`}
-            onClick={() => navigate('/results')}>📊 Results</button>
+            onClick={() => navigate(session?.id ? `/session/${session.id}/results` : '/results')}>📊 Results</button>
           <button className={`tab-btn ${currentView === 'history' ? 'active' : ''}`}
             onClick={() => navigate('/history')}>📈 History</button>
           <button className={`tab-btn review-tab ${reviewMode ? 'active' : ''}`}
             onClick={onEnterReview} disabled={stats.incorrect === 0}>
             🔄 ({stats.incorrect})
           </button>
-          {profile?.is_admin && (
-            <button className={`tab-btn ${currentView === 'admin' ? 'active' : ''}`}
-              onClick={() => { navigate('/admin'); onExitReview(); }}>🛠️ Admin</button>
-          )}
         </div>
         
         {currentView === 'exam' && (

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation, useMatch } from 'react-router-dom';
 import './index.css';
 import allQuestions from './data.json';
 import { supabase } from './lib/supabase';
@@ -30,6 +30,10 @@ function extractCorrectAnswer(answerText) {
 function AppContent() {
   const navigate = useNavigate();
   const location = useLocation();
+  const sessionMatch = useMatch('/session/:sessionId');
+  const resultsMatch = useMatch('/session/:sessionId/results');
+  const urlSessionId = sessionMatch?.params?.sessionId || resultsMatch?.params?.sessionId;
+  const [sessionHydrating, setSessionHydrating] = useState(false);
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
@@ -154,7 +158,7 @@ function AppContent() {
   };
 
   // ========== SESSION ==========
-  const handleStartSession = async (sess) => {
+  const handleStartSession = useCallback(async (sess) => {
     setSession(sess);
     const filtered = allQuestions.filter(q => q.id >= sess.range_start && q.id <= sess.range_end);
     setQuestions(filtered);
@@ -176,11 +180,10 @@ function AppContent() {
       setFailCounts(fc);
     }
     setShowAnswer(false); setCurrentView('exam'); setReviewMode(false); setReinforceMode(false);
-  };
+  }, [user]);
 
   // ========== REINFORCEMENT MODE ==========
-  const handleStartReinforcement = async () => {
-    // Load all answers to find questions with ≥2 fails
+  const handleStartReinforcement = useCallback(async () => {
     const { data: allAnswers } = await supabase
       .from('answers').select('question_id, result').eq('user_id', user.id);
     if (!allAnswers) return;
@@ -199,6 +202,7 @@ function AppContent() {
 
     if (weakIds.length === 0) {
       alert('🎉 No weak questions found! You\'re doing great!');
+      navigate('/');
       return;
     }
 
@@ -212,7 +216,43 @@ function AppContent() {
     setShowAnswer(false);
     setCurrentView('exam');
     setSession({ id: 'reinforce', label: '🔥 Reinforcement', range_start: 0, range_end: 999 });
-  };
+  }, [user, navigate]);
+
+  useEffect(() => {
+    if (!user || !urlSessionId) {
+      setSessionHydrating(false);
+      return;
+    }
+    if (session?.id !== urlSessionId) {
+      if (urlSessionId === 'reinforce') {
+        const loadReinforcement = async () => {
+          setSessionHydrating(true);
+          await handleStartReinforcement();
+          setSessionHydrating(false);
+        };
+        loadReinforcement();
+      } else {
+        const load = async () => {
+          setSessionHydrating(true);
+          const { data: sessionData, error } = await supabase
+            .from('study_sessions')
+            .select('*')
+            .eq('id', urlSessionId)
+            .eq('user_id', user.id)
+            .eq('is_active', true)
+            .maybeSingle();
+
+          if (error || !sessionData) {
+            navigate('/');
+          } else {
+            await handleStartSession(sessionData);
+          }
+          setSessionHydrating(false);
+        };
+        load();
+      }
+    }
+  }, [user, urlSessionId, session?.id, navigate, handleStartSession, handleStartReinforcement]);
 
   const handleEndSession = () => {
     setSession(null); setResults({}); setCurrentIndex(0); setReviewMode(false);
@@ -406,27 +446,27 @@ function AppContent() {
   // Navigation wrappers
   const startSessionWrapper = async (sess) => {
     await handleStartSession(sess);
-    navigate('/exam');
+    navigate(`/session/${sess.id}`);
   };
 
   const reinforcementWrapper = async () => {
     await handleStartReinforcement();
-    navigate('/exam');
+    navigate('/session/reinforce');
   };
 
   const endTestWrapper = () => {
     handleEndTest();
-    navigate('/results');
+    if (session?.id) navigate(`/session/${session.id}/results`);
   };
 
   const reviewIncorrectWrapper = () => {
     enterReviewMode();
-    navigate('/exam');
+    if (session?.id) navigate(`/session/${session.id}`);
   };
 
   const jumpQuestionWrapper = (idx) => {
     jumpToQuestion(idx);
-    navigate('/exam');
+    if (session?.id) navigate(`/session/${session.id}`);
   };
 
   const backDashboardWrapper = () => {
@@ -437,8 +477,8 @@ function AppContent() {
   // Derive currentView from URL pathname
   let pathCurrentView = 'exam'; // default
   if (location.pathname === '/') pathCurrentView = 'home';
-  else if (location.pathname === '/exam') pathCurrentView = 'exam';
-  else if (location.pathname === '/results') pathCurrentView = 'results';
+  else if (location.pathname === '/exam' || sessionMatch) pathCurrentView = 'exam';
+  else if (location.pathname === '/results' || resultsMatch) pathCurrentView = 'results';
   else if (location.pathname === '/history') pathCurrentView = 'history';
   else if (location.pathname === '/admin') pathCurrentView = 'admin';
 
@@ -449,7 +489,7 @@ function AppContent() {
         <div className="app-container admin-app-shell">
           <main className="main-area admin-main-area">
             <div className="content-scroll admin-content-scroll">
-              <AdminPanel profile={profile} onBack={() => navigate(session ? '/exam' : '/')} />
+              <AdminPanel profile={profile} onBack={() => navigate(session && session.id !== 'reinforce' ? `/session/${session.id}` : session ? '/exam' : '/')} />
             </div>
           </main>
         </div>
@@ -458,6 +498,8 @@ function AppContent() {
   }
 
   // Home view (no session)
+  if (sessionHydrating) return <div className="loading-screen"><div className="spinner"></div></div>;
+
   if (pathCurrentView === 'home' || !session) {
     return <SessionSetup user={user} profile={profile} onStartSession={startSessionWrapper}
       onLogout={handleLogout} onStartReinforcement={reinforcementWrapper} onGoToAdmin={() => navigate('/admin')} />;
@@ -466,6 +508,74 @@ function AppContent() {
   // Exam view with session
   const navList = getNavList();
   const posInList = navList.indexOf(currentIndex);
+
+  const examElement = (
+    <>
+      <header className="top-bar">
+        <div className="top-bar-left">
+          <h2 className="question-title">
+            {reviewMode && <span className="review-badge">🔄 REVIEW</span>}
+            {reinforceMode && <span className="reinforce-badge">🔥 REINFORCE</span>}
+            {currentQuestion?.isLab ? `🧪 Lab ${currentQuestion.id}` : `📝 Q${currentQuestion?.id}`}
+            {results[currentQuestion?.id] === 'correct' && <span className="result-badge correct">✓</span>}
+            {results[currentQuestion?.id] === 'incorrect' && <span className="result-badge incorrect">✗</span>}
+          </h2>
+          <span className="progress-text">{stats.answered}/{stats.total}</span>
+        </div>
+        <div className="top-bar-right">
+          <div className="search-wrapper">
+            <input type="text" className="search-input" placeholder="Search..." value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)} id="search-input" />
+            {searchQuery && <span className="search-count">{filteredIndices?.length ?? stats.total}</span>}
+          </div>
+          <form onSubmit={handleJumpSubmit} className="jump-form">
+            <input type="number" className="jump-input" placeholder="#" min={1} max={483}
+              value={jumpValue} onChange={(e) => setJumpValue(e.target.value)} id="jump-input" />
+            <button type="submit" className="btn btn-secondary btn-sm">Go</button>
+          </form>
+          <div className="nav-controls">
+            <button className="btn btn-secondary" onClick={handlePrev} disabled={posInList <= 0}>←</button>
+            <button className="btn btn-primary" onClick={handleNext} disabled={posInList >= navList.length - 1}>→</button>
+          </div>
+          <button
+            className="btn btn-secondary btn-sm"
+            onClick={() => setIsFullscreen(prev => !prev)}
+            title="Toggle fullscreen (F)"
+            id="fullscreen-btn"
+          >⛶</button>
+          <button className="btn btn-end-test" onClick={endTestWrapper}>🏁 End</button>
+        </div>
+      </header>
+      <div className="content-scroll">
+        {currentQuestion && (
+          <QuestionViewer
+            question={currentQuestion} showAnswer={showAnswer}
+            onShowAnswer={handleShowAnswer} onMarkResult={handleMarkResult}
+            currentResult={results[currentQuestion.id]}
+            failCount={failCounts[currentQuestion.id] || 0}
+            selectedLetters={selectedLetters[currentQuestion.id] || []}
+            onSelectLetter={(letters) => handleSelectLetter(currentQuestion.id, letters)}
+          />
+        )}
+      </div>
+      <footer className="bottom-nav">
+        <button className="btn btn-secondary" onClick={handlePrev} disabled={posInList <= 0}>← Prev</button>
+        <span className="bottom-nav-info">
+          {reinforceMode && `🔥 ${questions.length} left`}
+          {!reinforceMode && `${currentIndex + 1} / ${questions.length}`}
+        </span>
+        <button className="btn btn-primary" onClick={handleNext} disabled={posInList >= navList.length - 1}>Next →</button>
+      </footer>
+    </>
+  );
+
+  const resultsElement = (
+    <div className="content-scroll">
+      <ResultsDashboard questions={questions} results={results} stats={stats}
+        onReviewIncorrect={reviewIncorrectWrapper} onJumpTo={jumpQuestionWrapper}
+        onBackToDashboard={backDashboardWrapper} />
+    </div>
+  );
 
   return (
     <div className={`app-container${isFullscreen ? ' fullscreen-mode' : ''}`}>
@@ -493,74 +603,10 @@ function AppContent() {
 
       <main className="main-area">
         <Routes>
-          <Route path="/exam" element={
-            <>
-              <header className="top-bar">
-                <div className="top-bar-left">
-                  <h2 className="question-title">
-                    {reviewMode && <span className="review-badge">🔄 REVIEW</span>}
-                    {reinforceMode && <span className="reinforce-badge">🔥 REINFORCE</span>}
-                    {currentQuestion?.isLab ? `🧪 Lab ${currentQuestion.id}` : `📝 Q${currentQuestion?.id}`}
-                    {results[currentQuestion?.id] === 'correct' && <span className="result-badge correct">✓</span>}
-                    {results[currentQuestion?.id] === 'incorrect' && <span className="result-badge incorrect">✗</span>}
-                  </h2>
-                  <span className="progress-text">{stats.answered}/{stats.total}</span>
-                </div>
-                <div className="top-bar-right">
-                  <div className="search-wrapper">
-                    <input type="text" className="search-input" placeholder="Search..." value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)} id="search-input" />
-                    {searchQuery && <span className="search-count">{filteredIndices?.length ?? stats.total}</span>}
-                  </div>
-                  <form onSubmit={handleJumpSubmit} className="jump-form">
-                    <input type="number" className="jump-input" placeholder="#" min={1} max={483}
-                      value={jumpValue} onChange={(e) => setJumpValue(e.target.value)} id="jump-input" />
-                    <button type="submit" className="btn btn-secondary btn-sm">Go</button>
-                  </form>
-                  <div className="nav-controls">
-                    <button className="btn btn-secondary" onClick={handlePrev} disabled={posInList <= 0}>←</button>
-                    <button className="btn btn-primary" onClick={handleNext} disabled={posInList >= navList.length - 1}>→</button>
-                  </div>
-                  <button
-                    className="btn btn-secondary btn-sm"
-                    onClick={() => setIsFullscreen(prev => !prev)}
-                    title="Toggle fullscreen (F)"
-                    id="fullscreen-btn"
-                  >⛶</button>
-                  <button className="btn btn-end-test" onClick={endTestWrapper}>🏁 End</button>
-                </div>
-              </header>
-              <div className="content-scroll">
-                {currentQuestion && (
-                  <QuestionViewer
-                    question={currentQuestion} showAnswer={showAnswer}
-                    onShowAnswer={handleShowAnswer} onMarkResult={handleMarkResult}
-                    currentResult={results[currentQuestion.id]}
-                    failCount={failCounts[currentQuestion.id] || 0}
-                    selectedLetters={selectedLetters[currentQuestion.id] || []}
-                    onSelectLetter={(letters) => handleSelectLetter(currentQuestion.id, letters)}
-                  />
-                )}
-              </div>
-              <footer className="bottom-nav">
-                <button className="btn btn-secondary" onClick={handlePrev} disabled={posInList <= 0}>← Prev</button>
-                <span className="bottom-nav-info">
-                  {reinforceMode && `🔥 ${questions.length} left`}
-                  {!reinforceMode && `${currentIndex + 1} / ${questions.length}`}
-                </span>
-                <button className="btn btn-primary" onClick={handleNext} disabled={posInList >= navList.length - 1}>Next →</button>
-              </footer>
-            </>
-          } />
-
-          <Route path="/results" element={
-            <div className="content-scroll">
-              <ResultsDashboard questions={questions} results={results} stats={stats}
-                onReviewIncorrect={reviewIncorrectWrapper} onJumpTo={jumpQuestionWrapper}
-                onBackToDashboard={backDashboardWrapper} />
-            </div>
-          } />
-
+          <Route path="/exam" element={examElement} />
+          <Route path="/session/:sessionId" element={examElement} />
+          <Route path="/results" element={resultsElement} />
+          <Route path="/session/:sessionId/results" element={resultsElement} />
           <Route path="/history" element={
             <div className="content-scroll">
               <UserHistory user={user} questions={allQuestions} onJumpTo={(idx) => {
@@ -569,7 +615,6 @@ function AppContent() {
               }} />
             </div>
           } />
-
           <Route path="*" element={<Navigate to="/exam" replace />} />
         </Routes>
       </main>
