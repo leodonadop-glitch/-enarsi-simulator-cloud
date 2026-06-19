@@ -321,17 +321,19 @@ function SessionSetup({ user, profile, onStartSession, onLogout, onStartReinforc
               <div className="form-group">
                 <label className="form-label">From</label>
                 <input type="number" className="form-input" min={1} max={483} value={rangeStart}
-                  onChange={(e) => setRangeStart(Math.max(1, parseInt(e.target.value) || 1))} />
+                  onChange={(e) => setRangeStart(e.target.value === '' ? '' : parseInt(e.target.value))}
+                  onBlur={(e) => setRangeStart(Math.max(1, Math.min(483, parseInt(e.target.value) || 1)))} />
               </div>
               <span className="range-dash">→</span>
               <div className="form-group">
                 <label className="form-label">To</label>
                 <input type="number" className="form-input" min={1} max={483} value={rangeEnd}
-                  onChange={(e) => setRangeEnd(Math.min(483, parseInt(e.target.value) || 483))} />
+                  onChange={(e) => setRangeEnd(e.target.value === '' ? '' : parseInt(e.target.value))}
+                  onBlur={(e) => setRangeEnd(Math.max(1, Math.min(483, parseInt(e.target.value) || 483)))} />
               </div>
             </div>
 
-            <button className="btn btn-auth" onClick={handleCreateSession} disabled={creating || rangeStart > rangeEnd}>
+            <button className="btn btn-auth" onClick={handleCreateSession} disabled={creating || rangeStart === '' || rangeEnd === '' || rangeStart > rangeEnd}>
               {creating ? '⏳ Creating...' : `🚀 Start (${rangeEnd - rangeStart + 1} questions)`}
             </button>
           </div>
