@@ -6103,7 +6103,7 @@
     ],
     "questionText": "tem 2 of 50 (Choice, Q435)\nAn engineer must confirm whether a router configured as a DHCP server is receiving DHCP requests. Which debug output confirms that the router received DHCP requests?\nOA 00:18:48: UDP: sent src=0.0.0.0(68), dst=255.255.255.255(67), length=333\n© B. 00:18:49: IP: $=0.0.0.0 (Ethermet2/0), d=255.255.255.255, len 604, rcvd 2\nO C. 00:18:49: UDP src=68, dst=67\n00:18:49: IP: $=0.0.0.0 (Ethemet2/0), d=255.255.255.255, len 604, rcvd 2\nO D. 00:18:49: UDP src=67, dst=68\n00:18:49: UDP: sent src=0.0.0.0(67), dst=255.255.255.255(68), length=333\n\n",
     "answerText": "tem 2 of 50 (Choice, Q435)\nAn engineer must confirm whether a router configured as a DHCP server is receiving DHCP requests. Which debug output confirms that the router received\nDHCP requests?\nA 00:18:49: IP: $=0.0.0.0 (Ethernet2/0), d=255.255.255.255, len 604, rcvd 2\nB. 00:18:49: UDP src=68, dst=67\n00:18:49: IP: $=0.0.0.0 (Ethemet2/0), d=255.255.255.255, len 604, rcvd 2\nC. 00:18:48: UDP: sent src=0.0.0.0(68), dst=255.255.255.255(67), length=333\nD. 00:18:49: UDP src=67, dst=68\n00:18:49: UDP: sent src=0.0.0.0(67), dst=255.255.255.255(68), length=333\n\n",
-    "correctAnswer": "B",
+    "correctAnswer": "C",
     "optionCount": 4
   },
   {
