@@ -88,7 +88,7 @@ function Sidebar({ questions, currentIndex, onSelect, results, stats, session,
             <button key={q.id} className={cls} onClick={() => onSelect(index)}
               title={`${q.isLab ? 'Lab' : 'Q'}${q.id}${result ? ` (${result})` : ''}`}>
               {q.isLab ? 'L' : q.id}
-              {reinforceMode && reinforceCorrectCounts[q.id] > 0 && (
+              {reinforceMode && reinforceCorrectCounts[q.id] !== undefined && (
                 <span className="reinforce-progress">{reinforceCorrectCounts[q.id]}/3</span>
               )}
             </button>

@@ -19,6 +19,10 @@ function SessionSetup({ user, profile, onStartSession, onLogout, onStartReinforc
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
 
+  // Reinforcement progress state
+  const [weakCount, setWeakCount] = useState(0);
+  const [loadingWeak, setLoadingWeak] = useState(true);
+
   // Activity and Streak state
   const [activityStats, setActivityStats] = useState({
     streak: 0,
@@ -27,6 +31,56 @@ function SessionSetup({ user, profile, onStartSession, onLogout, onStartReinforc
     totalActiveDays: 0,
     status: 'loading' // 'loading', 'empty', 'error', 'today', 'yesterday', 'inactive-2-3', 'inactive-4'
   });
+
+  const loadWeakCount = useCallback(async () => {
+    setLoadingWeak(true);
+    try {
+      const { data: allAnswers } = await supabase
+        .from('answers')
+        .select('question_id, result, answered_at')
+        .eq('user_id', user.id)
+        .order('answered_at', { ascending: true });
+
+      if (!allAnswers) {
+        setWeakCount(0);
+        setLoadingWeak(false);
+        return;
+      }
+
+      const historyMap = {};
+      allAnswers.forEach(a => {
+        if (!historyMap[a.question_id]) {
+          historyMap[a.question_id] = [];
+        }
+        historyMap[a.question_id].push(a.result);
+      });
+
+      let count = 0;
+      Object.entries(historyMap).forEach(([qId, results]) => {
+        const hasFail = results.includes('incorrect');
+        if (!hasFail) return;
+
+        let consecutiveCorrect = 0;
+        for (let i = results.length - 1; i >= 0; i--) {
+          if (results[i] === 'correct') {
+            consecutiveCorrect++;
+          } else {
+            break;
+          }
+        }
+
+        if (consecutiveCorrect < 3) {
+          count++;
+        }
+      });
+
+      setWeakCount(count);
+    } catch (err) {
+      console.error('Error loading weak count:', err);
+    } finally {
+      setLoadingWeak(false);
+    }
+  }, [user.id]);
 
   const loadSessions = useCallback(async () => {
     const { data: sessions } = await supabase
@@ -180,9 +234,10 @@ function SessionSetup({ user, profile, onStartSession, onLogout, onStartReinforc
     const timer = setTimeout(() => {
       loadSessions();
       loadActivityStats();
+      loadWeakCount();
     }, 0);
     return () => clearTimeout(timer);
-  }, [loadSessions, loadActivityStats]);
+  }, [loadSessions, loadActivityStats, loadWeakCount]);
 
   const handleCreateSession = async () => {
     setCreating(true);
@@ -400,12 +455,40 @@ function SessionSetup({ user, profile, onStartSession, onLogout, onStartReinforc
 
           {/* Reinforcement Card */}
           <div className="session-card glass-panel reinforce-card">
-            <h2 className="session-card-title">🔥 Reinforcement</h2>
+            <h2 className="session-card-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span>🔥 Reinforcement</span>
+              {!loadingWeak && (
+                <span className="badge" style={{ 
+                  background: weakCount > 0 ? 'rgba(249,115,22,0.15)' : 'rgba(34,197,94,0.15)',
+                  color: weakCount > 0 ? '#f97316' : '#22c55e',
+                  fontSize: '0.8rem',
+                  padding: '4px 10px',
+                  borderRadius: '12px',
+                  border: weakCount > 0 ? '1px solid rgba(249,115,22,0.3)' : '1px solid rgba(34,197,94,0.3)'
+                }}>
+                  {weakCount} left
+                </span>
+              )}
+            </h2>
             <p className="text-muted" style={{ marginBottom: '16px', fontSize: '0.9rem' }}>
-              Practice questions you've failed at least once. Get them right 3 times in a row to clear them!
+              {loadingWeak ? (
+                'Calculating reinforcement progress...'
+              ) : weakCount > 0 ? (
+                <>Practice questions you've failed at least once. Get them right 3 times in a row to clear them.</>
+              ) : (
+                <>🎉 Excellent! You have cleared all weak questions by answering them correctly 3 times consecutively.</>
+              )}
             </p>
-            <button className="btn btn-reinforce" onClick={onStartReinforcement}>
-              Start Reinforcement Mode
+            <button 
+              className="btn btn-reinforce" 
+              onClick={onStartReinforcement}
+              disabled={loadingWeak || weakCount === 0}
+              style={{
+                opacity: (loadingWeak || weakCount === 0) ? 0.6 : 1,
+                cursor: (loadingWeak || weakCount === 0) ? 'not-allowed' : 'pointer'
+              }}
+            >
+              {loadingWeak ? 'Loading...' : weakCount === 0 ? 'All Clear!' : 'Start Reinforcement Mode'}
             </button>
           </div>
         </div>

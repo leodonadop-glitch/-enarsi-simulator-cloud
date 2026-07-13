@@ -185,20 +185,44 @@ function AppContent() {
   // ========== REINFORCEMENT MODE ==========
   const handleStartReinforcement = useCallback(async () => {
     const { data: allAnswers } = await supabase
-      .from('answers').select('question_id, result').eq('user_id', user.id);
+      .from('answers')
+      .select('question_id, result, answered_at')
+      .eq('user_id', user.id)
+      .order('answered_at', { ascending: true });
+
     if (!allAnswers) return;
 
-    const failMap = {};
+    const historyMap = {};
     allAnswers.forEach(a => {
-      if (!failMap[a.question_id]) failMap[a.question_id] = { fails: 0, passes: 0 };
-      if (a.result === 'incorrect') failMap[a.question_id].fails++;
-      else failMap[a.question_id].passes++;
+      if (!historyMap[a.question_id]) {
+        historyMap[a.question_id] = [];
+      }
+      historyMap[a.question_id].push(a.result);
     });
 
-    const weakIds = Object.entries(failMap)
-      .filter(([, v]) => v.fails >= 1)
-      .sort((a, b) => b[1].fails - a[1].fails)
-      .map(([qId]) => parseInt(qId));
+    const correctCounts = {};
+    const weakIds = [];
+
+    Object.entries(historyMap).forEach(([qIdStr, results]) => {
+      const qId = parseInt(qIdStr);
+      const hasFail = results.includes('incorrect');
+      if (!hasFail) return; // Never failed
+
+      let consecutiveCorrect = 0;
+      for (let i = results.length - 1; i >= 0; i--) {
+        if (results[i] === 'correct') {
+          consecutiveCorrect++;
+        } else {
+          break;
+        }
+      }
+
+      correctCounts[qId] = consecutiveCorrect;
+
+      if (consecutiveCorrect < 3) {
+        weakIds.push(qId);
+      }
+    });
 
     if (weakIds.length === 0) {
       alert('🎉 No weak questions found! You\'re doing great!');
@@ -206,13 +230,24 @@ function AppContent() {
       return;
     }
 
+    // Sort weakIds by total failures descending (to prioritize most failed questions)
+    const failCountsMap = {};
+    allAnswers.forEach(a => {
+      if (a.result === 'incorrect') {
+        failCountsMap[a.question_id] = (failCountsMap[a.question_id] || 0) + 1;
+      }
+    });
+    weakIds.sort((a, b) => (failCountsMap[b] || 0) - (failCountsMap[a] || 0));
+
     const filtered = allQuestions.filter(q => weakIds.includes(q.id));
+    filtered.sort((a, b) => weakIds.indexOf(a.id) - weakIds.indexOf(b.id));
+
     setQuestions(filtered);
     setCurrentIndex(0);
     setResults({});
     setSelectedLetters({});
     setReinforceMode(true);
-    setReinforceCorrectCounts({});
+    setReinforceCorrectCounts(correctCounts);
     setShowAnswer(false);
     setCurrentView('exam');
     setSession({ id: 'reinforce', label: '🔥 Reinforcement', range_start: 0, range_end: 999 });
@@ -340,16 +375,24 @@ function AppContent() {
 
     setResults(prev => ({ ...prev, [currentQuestion.id]: result }));
 
-    // Save to Supabase (skip for reinforcement mode dummy session)
-    if (session?.id && session.id !== 'reinforce') {
-      await supabase.from('answers').insert({
-        user_id: user.id, session_id: session.id,
-        question_id: currentQuestion.id, result,
-      });
-      await supabase.from('study_sessions')
-        .update({ last_question_id: currentQuestion.id, updated_at: new Date().toISOString() })
-        .eq('id', session.id);
-      setSession(prev => prev ? { ...prev, last_question_id: currentQuestion.id } : null);
+    // Save to Supabase (save reinforcement answers too, but without session_id)
+    if (session?.id) {
+      const insertData = {
+        user_id: user.id,
+        question_id: currentQuestion.id,
+        result,
+      };
+      if (session.id !== 'reinforce') {
+        insertData.session_id = session.id;
+      }
+      await supabase.from('answers').insert(insertData);
+
+      if (session.id !== 'reinforce') {
+        await supabase.from('study_sessions')
+          .update({ last_question_id: currentQuestion.id, updated_at: new Date().toISOString() })
+          .eq('id', session.id);
+        setSession(prev => prev ? { ...prev, last_question_id: currentQuestion.id } : null);
+      }
     }
 
     if (result === 'incorrect') {
@@ -379,23 +422,48 @@ function AppContent() {
   const handleMarkResult = async (result) => {
     if (!currentQuestion || !session) return;
     setResults(prev => ({ ...prev, [currentQuestion.id]: result }));
+
+    const insertData = {
+      user_id: user.id,
+      question_id: currentQuestion.id,
+      result,
+    };
+
     if (session.id !== 'reinforce') {
-      // Prevent duplicates if user toggles mark multiple times
+      // Prevent duplicates if user toggles mark multiple times in same session
       await supabase.from('answers')
         .delete()
         .match({ session_id: session.id, question_id: currentQuestion.id });
+      insertData.session_id = session.id;
+    }
 
-      await supabase.from('answers').insert({
-        user_id: user.id, session_id: session.id,
-        question_id: currentQuestion.id, result,
-      });
-      if (result === 'incorrect') {
-        setFailCounts(prev => ({ ...prev, [currentQuestion.id]: (prev[currentQuestion.id] || 0) + 1 }));
-      }
+    await supabase.from('answers').insert(insertData);
+
+    if (result === 'incorrect') {
+      setFailCounts(prev => ({ ...prev, [currentQuestion.id]: (prev[currentQuestion.id] || 0) + 1 }));
+    }
+
+    if (session.id !== 'reinforce') {
       await supabase.from('study_sessions')
         .update({ last_question_id: currentQuestion.id, updated_at: new Date().toISOString() })
         .eq('id', session.id);
       setSession(prev => prev ? { ...prev, last_question_id: currentQuestion.id } : null);
+    } else {
+      // If manually marked in reinforcement mode, we also update consecutive correct count
+      if (result === 'correct') {
+        setReinforceCorrectCounts(prev => {
+          const newCount = (prev[currentQuestion.id] || 0) + 1;
+          const updated = { ...prev, [currentQuestion.id]: newCount };
+          if (newCount >= 3) {
+            setTimeout(() => {
+              setQuestions(qs => qs.filter(q => q.id !== currentQuestion.id));
+            }, 500);
+          }
+          return updated;
+        });
+      } else {
+        setReinforceCorrectCounts(prev => ({ ...prev, [currentQuestion.id]: 0 }));
+      }
     }
   };
 
@@ -516,9 +584,9 @@ function AppContent() {
           <h2 className="question-title">
             {reviewMode && <span className="review-badge">🔄 REVIEW</span>}
             {reinforceMode && <span className="reinforce-badge">🔥 REINFORCE</span>}
-            {currentQuestion?.isLab ? `🧪 Lab ${currentQuestion.id}` : `📝 Q${currentQuestion?.id}`}
-            {results[currentQuestion?.id] === 'correct' && <span className="result-badge correct">✓</span>}
-            {results[currentQuestion?.id] === 'incorrect' && <span className="result-badge incorrect">✗</span>}
+            {currentQuestion ? (currentQuestion.isLab ? `🧪 Lab ${currentQuestion.id}` : `📝 Q${currentQuestion.id}`) : '🎉 Complete'}
+            {currentQuestion && results[currentQuestion.id] === 'correct' && <span className="result-badge correct">✓</span>}
+            {currentQuestion && results[currentQuestion.id] === 'incorrect' && <span className="result-badge incorrect">✗</span>}
           </h2>
           <span className="progress-text">{stats.answered}/{stats.total}</span>
         </div>
@@ -534,8 +602,8 @@ function AppContent() {
             <button type="submit" className="btn btn-secondary btn-sm">Go</button>
           </form>
           <div className="nav-controls">
-            <button className="btn btn-secondary" onClick={handlePrev} disabled={posInList <= 0}>←</button>
-            <button className="btn btn-primary" onClick={handleNext} disabled={posInList >= navList.length - 1}>→</button>
+            <button className="btn btn-secondary" onClick={handlePrev} disabled={posInList <= 0 || !currentQuestion}>←</button>
+            <button className="btn btn-primary" onClick={handleNext} disabled={posInList >= navList.length - 1 || !currentQuestion}>→</button>
           </div>
           <button
             className="btn btn-secondary btn-sm"
@@ -547,7 +615,7 @@ function AppContent() {
         </div>
       </header>
       <div className="content-scroll">
-        {currentQuestion && (
+        {currentQuestion ? (
           <QuestionViewer
             question={currentQuestion} showAnswer={showAnswer}
             onShowAnswer={handleShowAnswer} onMarkResult={handleMarkResult}
@@ -556,6 +624,16 @@ function AppContent() {
             selectedLetters={selectedLetters[currentQuestion.id] || []}
             onSelectLetter={(letters) => handleSelectLetter(currentQuestion.id, letters)}
           />
+        ) : (
+          <div className="reinforcement-complete-card glass-panel" style={{ padding: '40px', textAlign: 'center', maxWidth: '600px', margin: '40px auto' }}>
+            <h2>🎉 Reinforcement Complete!</h2>
+            <p className="text-muted" style={{ margin: '20px 0', fontSize: '0.95rem', lineHeight: '1.6' }}>
+              Excellent job! You have cleared all weak questions by answering them correctly 3 times consecutively.
+            </p>
+            <button className="btn btn-primary" onClick={backDashboardWrapper}>
+              Back to Dashboard
+            </button>
+          </div>
         )}
       </div>
       <footer className="bottom-nav">
