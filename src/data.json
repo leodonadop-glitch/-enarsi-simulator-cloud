@@ -6689,38 +6689,38 @@
         "192.168.1.2 255.255.255.0"
       ],
       "dropTargets": [
-        "CE1 interface Gig0/0 ip vrf forwarding",
-        "CE1 interface Gig0/0 ip address",
-        "CE1 interface Gig0/1 ip vrf forwarding",
-        "CE1 interface Gig0/1 ip address",
-        "CE2 interface Gig0/0 ip vrf forwarding",
-        "CE2 interface Gig0/0 ip address",
-        "CE2 interface Gig0/1 ip vrf forwarding",
-        "CE2 interface Gig0/1 ip address"
+        "CE1 — interface Gig0/0§ip vrf forwarding  [___]",
+        "CE1 — interface Gig0/0§ip address  [___]",
+        "CE1 — interface Gig0/1§ip vrf forwarding  [___]",
+        "CE1 — interface Gig0/1§ip address  [___]",
+        "CE2 — interface Gig0/0§ip vrf forwarding  [___]",
+        "CE2 — interface Gig0/0§ip address  [___]",
+        "CE2 — interface Gig0/1§ip vrf forwarding  [___]",
+        "CE2 — interface Gig0/1§ip address  [___]"
       ],
       "correctMapping": {
-        "CE1 interface Gig0/0 ip vrf forwarding": [
+        "CE1 — interface Gig0/0§ip vrf forwarding  [___]": [
           "customer_a"
         ],
-        "CE1 interface Gig0/0 ip address": [
+        "CE1 — interface Gig0/0§ip address  [___]": [
           "192.168.1.1 255.255.255.0"
         ],
-        "CE1 interface Gig0/1 ip vrf forwarding": [
+        "CE1 — interface Gig0/1§ip vrf forwarding  [___]": [
           "customer_b"
         ],
-        "CE1 interface Gig0/1 ip address": [
+        "CE1 — interface Gig0/1§ip address  [___]": [
           "192.168.1.1 255.255.255.0"
         ],
-        "CE2 interface Gig0/0 ip vrf forwarding": [
+        "CE2 — interface Gig0/0§ip vrf forwarding  [___]": [
           "customer_a"
         ],
-        "CE2 interface Gig0/0 ip address": [
+        "CE2 — interface Gig0/0§ip address  [___]": [
           "192.168.1.2 255.255.255.0"
         ],
-        "CE2 interface Gig0/1 ip vrf forwarding": [
+        "CE2 — interface Gig0/1§ip vrf forwarding  [___]": [
           "customer_b"
         ],
-        "CE2 interface Gig0/1 ip address": [
+        "CE2 — interface Gig0/1§ip address  [___]": [
           "192.168.1.2 255.255.255.0"
         ]
       }

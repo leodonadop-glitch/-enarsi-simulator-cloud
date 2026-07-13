@@ -203,7 +203,37 @@ function QuestionViewer({ question, showAnswer, onShowAnswer, onMarkResult, curr
       )}
 
       {/* LETTER SELECTION / DRAG & DROP UI */}
-      {isDragDrop && dragDropData && (
+      {isDragDrop && dragDropData && (() => {
+        // Count how many times each item is used across all targets
+        const usageCounts = {};
+        Object.values(currentMapping).forEach(item => {
+          usageCounts[item] = (usageCounts[item] || 0) + 1;
+        });
+
+        // Group targets by section (using § separator in target labels)
+        const groupedTargets = [];
+        let currentGroup = null;
+        dragDropData.dropTargets.forEach(target => {
+          const sepIdx = target.indexOf('§');
+          if (sepIdx !== -1) {
+            const section = target.substring(0, sepIdx).trim();
+            const label = target.substring(sepIdx + 1).trim();
+            if (!currentGroup || currentGroup.section !== section) {
+              currentGroup = { section, targets: [] };
+              groupedTargets.push(currentGroup);
+            }
+            currentGroup.targets.push({ key: target, label });
+          } else {
+            // No grouping — flat target
+            if (!currentGroup || currentGroup.section !== '__flat__') {
+              currentGroup = { section: '__flat__', targets: [] };
+              groupedTargets.push(currentGroup);
+            }
+            currentGroup.targets.push({ key: target, label: target });
+          }
+        });
+
+        return (
         <div className="dnd-container" style={{ marginTop: '20px' }}>
           <p className="dnd-instruction">
             {showAnswer ? 'Your Mapping:' : dragDropData.instruction}
@@ -212,50 +242,57 @@ function QuestionViewer({ question, showAnswer, onShowAnswer, onMarkResult, curr
             <div className="dnd-col">
               <div className="dnd-col-title">Available Options</div>
               {dragDropData.draggableItems.map(item => {
-                const isMapped = Object.values(currentMapping).includes(item);
-                const isSelected = selectedLeftBox === item;
+                const isSelectedItem = selectedLeftBox === item;
+                const count = usageCounts[item] || 0;
                 let cls = 'dnd-item';
-                if (isSelected) cls += ' selected';
-                if (isMapped && !isSelected) cls += ' disabled';
+                if (isSelectedItem) cls += ' selected';
                 return (
                   <div key={item} className={cls} onClick={() => handleLeftClick(item)}>
-                    {item} {isMapped && !isSelected && '✅'}
+                    {item} {count > 0 && <span className="dnd-usage-badge">{count}×</span>}
                   </div>
                 );
               })}
             </div>
             <div className="dnd-col">
-              <div className="dnd-col-title">Targets</div>
-              {dragDropData.dropTargets.map(target => {
-                const mappedItem = currentMapping[target];
-                let cls = 'dnd-target';
-                
-                if (showAnswer) {
-                  const correctItem = dragDropData.correctMapping[target]?.[0];
-                  if (mappedItem === correctItem) {
-                    cls += ' correct';
-                  } else if (mappedItem) {
-                    cls += ' incorrect';
-                  } else {
-                    cls += ' missed';
-                  }
-                } else if (selectedLeftBox) {
-                  cls += ' highlight'; // You can add CSS for this if you want
-                }
+              <div className="dnd-col-title">Configuration</div>
+              {groupedTargets.map((group, gIdx) => (
+                <div key={gIdx} className="dnd-target-group">
+                  {group.section !== '__flat__' && (
+                    <div className="dnd-group-header">{group.section}</div>
+                  )}
+                  {group.targets.map(({ key: target, label }) => {
+                    const mappedItem = currentMapping[target];
+                    let cls = 'dnd-target';
+                    
+                    if (showAnswer) {
+                      const correctItem = dragDropData.correctMapping[target]?.[0];
+                      if (mappedItem === correctItem) {
+                        cls += ' correct';
+                      } else if (mappedItem) {
+                        cls += ' incorrect';
+                      } else {
+                        cls += ' missed';
+                      }
+                    } else if (selectedLeftBox) {
+                      cls += ' highlight';
+                    }
 
-                return (
-                  <div key={target} className={cls} onClick={() => handleRightClick(target)}>
-                    <span className="dnd-target-label">{target}</span>
-                    {mappedItem && (
-                      <div className="dnd-target-content">{mappedItem}</div>
-                    )}
-                  </div>
-                );
-              })}
+                    return (
+                      <div key={target} className={cls} onClick={() => handleRightClick(target)}>
+                        <span className="dnd-target-label">{label}</span>
+                        {mappedItem && (
+                          <div className="dnd-target-content">{mappedItem}</div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
             </div>
           </div>
         </div>
-      )}
+        );
+      })()}
 
       {!question.isLab && !isDragDrop && (
         <div className="letter-selection-section">

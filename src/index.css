@@ -1058,6 +1058,33 @@ body {
 .dnd-target.incorrect .dnd-target-content { background: var(--danger); box-shadow: 0 2px 8px var(--danger-glow); }
 .dnd-target.missed { border-color: var(--lab-color); border-style: dashed; }
 
+/* Drag and Drop - Grouped layout */
+.dnd-target-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 6px; }
+.dnd-group-header {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--accent);
+  padding: 8px 12px;
+  background: rgba(59, 130, 246, 0.08);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.03em;
+}
+.dnd-usage-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-left: 8px;
+  min-width: 20px;
+}
+
 /* ====================== ACTIVITY & STREAK CARD ====================== */
 .activity-card {
   display: flex;
